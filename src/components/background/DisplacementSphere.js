@@ -53,10 +53,11 @@ const DisplacementSphere = (props) => {
         renderer.current = new WebGLRenderer({
             canvas: canvasRef.current,
             powerPreference: "high-performance",
+            alpha: true,
         });
         renderer.current.setSize(width.current, height.current);
         renderer.current.setPixelRatio(1);
-        renderer.current.outputEncoding = sRGBEncoding;
+        // renderer.current.outputEncoding = sRGBEncoding;
 
         camera.current = new PerspectiveCamera(
             55,
@@ -111,7 +112,7 @@ const DisplacementSphere = (props) => {
         dirLight.position.y = 100;
 
         lights.current = [dirLight, ambientLight];
-        scene.current.background = rgbToThreeColor(rgbBackground);
+        // scene.current.background = rgbToThreeColor(rgbBackground);
         lights.current.forEach((light) => scene.current.add(light));
 
         return () => {

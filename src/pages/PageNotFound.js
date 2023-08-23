@@ -31,8 +31,10 @@ export const PageNotFound = () => {
                 <DisplacementSphere />
                 <LogoLink />
                 <Container component="main" className={`${classes.main}`} maxWidth="sm">
-                    <Typography variant="h2" component="h1" gutterBottom>
-                        <TextDecrypt text="Oops, 404... what were you looking for?" />
+                    <Typography variant="h3" component="h3" gutterBottom>
+                        <TextDecrypt text="Oops, you know what this means... let's get you to the right place. " />
+                        <TextDecrypt text="No worries, let's get you to the right place." />
+                        <TextDecrypt text="samfranklin.dev" />
                     </Typography>
                 </Container>
                 <ThemeToggle />

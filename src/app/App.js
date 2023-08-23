@@ -21,7 +21,7 @@ export const App = () => {
                 <Switch>
                     <Route path="/" exact component={Home} />
                     <Route path="/resume" component={Resume} />
-                    <Route path="*" component={PageNotFound} />
+                    <Route path="/404" component={PageNotFound} />
                 </Switch>
             </Router>
         </ThemeProvider>
