@@ -1,21 +1,20 @@
 {
-  "name": "personal-website-react",
+  "name": "samfranklin.dev",
   "version": "0.2.0",
-  "homepage": "https://jolienhoop.com",
-  "description": "This is a clean customizable portfolio template for developers.",
-  "repository": "https://github.com/JoHoop/personal-website-react",
-  "author": "Jo Lienhoop <hey@jolienhoop.com>",
+  "homepage": "samfranklin.dev",
+  "description": "Personal website built with React",
+  "repository": "",
+  "author": "Sam Franklin <info@samfranklin.dev>",
   "license": "MIT",
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@heroicons/react": "^2.2.0",
-    "@mui/material": "^5.10.0",
     "@mui/icons-material": "^5.10.0",
+    "@mui/material": "^5.10.0",
     "@mui/lab": "^5.0.0-alpha.56",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
     "axios": "^1.7.7",
     "body-parser": "^1.20.3",
     "classnames": "^2.2.6",
@@ -80,5 +79,5 @@
     "@tailwindcss/typography": "^0.5.15",
     "@types/react-router-dom": "^5.3.3"
   },
-  "proxy": ["http://localhost:5001", "http://localhost:5000", "http://localhost:5004"]
+  "proxy": ["http://localhost:5001", "http://localhost:5000","http://localhost:5003" ,"http://localhost:5004"]
 }
