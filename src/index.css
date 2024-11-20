@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 ::-moz-selection {
     background: #8C8278;
     color: #fafafa;

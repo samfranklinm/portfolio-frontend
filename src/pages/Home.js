@@ -1,39 +1,25 @@
+// src/pages/Home.js
 import React from 'react';
+import Chat from '../components/chat/Chat';
 import { LogoLink } from '../components/logo/LogoLink';
-import { Content } from '../components/content/Content';
-import { Hidden } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import DisplacementSphere from '../components/background/DisplacementSphere';
-import { ThemeToggle } from '../components/theme/ThemeToggle';
-import { FooterText } from '../components/footer/FooterText';
-import { SocialIcons } from '../components/content/SocialIcons';
+import {FooterText} from '../components/footer/FooterText';
 
-const useStyles = makeStyles(() => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-  },
-}));
-
-export const Home = () => {
-  const classes = useStyles();
-
+function Home() {
   return (
-    <>
-      <div className={classes.root}>
-        <DisplacementSphere />
-        <LogoLink />
-        <Content />
-        <ThemeToggle />
-        <Hidden smDown>
-          <SocialIcons />
-        </Hidden>
-        {/* <Hidden mdUp>
-          <SpeedDials />
-        </Hidden> */}
-        <FooterText />
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#dbd8d5] to-[#8C8278] text-black">
+      <LogoLink />
+      <div className="w-100 max-w-3xl text-center mb-4 mt-20 flex-grow flex flex-col items-center justify-center">
+        <h1 className="text-5xl font-light mb-4 tracking-tight">You made it!</h1>
+        <p className="text-lg text-gray-600 font-light">
+          I'm Frank, I'm sure you're eager to get to know me.. well start typing!
+        </p>
       </div>
-    </>
+      <div className="w-100 max-w-4xl flex-none h-55 flex items-center justify-center">
+        <Chat />
+      </div>
+      <FooterText />
+    </div>
   );
-};
+}
+
+export default Home;
