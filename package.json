@@ -1,7 +1,7 @@
 {
   "name": "samfranklin.dev",
   "version": "0.2.0",
-  "homepage": "samfranklin.dev",
+  "homepage": "",
   "description": "Personal website built with React",
   "repository": "",
   "author": "Sam Franklin <info@samfranklin.dev>",
@@ -32,8 +32,8 @@
     "ios-inner-height": "^1.1.1",
     "pdf-parse": "^1.1.1",
     "popmotion": "^8.7.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-helmet": "^6.1.0",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^5.3.4",
@@ -49,9 +49,6 @@
     "build": "react-scripts build",
     "deploy": "firebase deploy",
     "serve": "firebase emulators:start"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -71,10 +68,5 @@
     "@types/react-router-dom": "^5.3.3",
     "typescript": "^4.9.5"
   },
-  "proxy": [
-    "http://localhost:5001",
-    "http://localhost:5000",
-    "http://localhost:5003",
-    "http://localhost:5004"
-  ]
+"proxy": "http://localhost:5003"
 }

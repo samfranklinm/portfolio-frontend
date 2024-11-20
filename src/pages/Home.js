@@ -6,8 +6,8 @@ import {FooterText} from '../components/footer/FooterText';
 
 function Home() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#dbd8d5] to-[#8C8278] text-black">
-      <LogoLink />
+<div className="relative min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#dbd8d5] to-[#8C8278] text-black">
+<LogoLink />
       <div className="w-100 max-w-3xl text-center mb-4 mt-20 flex-grow flex flex-col items-center justify-center">
         <h1 className="text-5xl font-light mb-4 tracking-tight">You made it!</h1>
         <p className="text-lg text-gray-600 font-light">
