@@ -1,38 +1,11 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Typography, Link } from '@material-ui/core';
-import { TextDecrypt } from '../content/TextDecrypt';
-
-const useStyles = makeStyles((theme) => ({
-  footerText: {
-    position: 'absolute',
-    bottom: theme.spacing(6),
-    left: theme.spacing(6),
-    '&:hover': {
-      color: theme.palette.primary.main,
-    },
-    transition: 'all 0.5s ease',
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-}));
 
 export const FooterText = () => {
-  const classes = useStyles();
-
   return (
-    <Link
-      color='inherit'
-      underline='none'
-
-      target='_blank'
-      rel='noopener noreferrer'
-      className={classes.footerText}
-    >
-      <Typography variant='body1'>
-        <TextDecrypt text={`© ${new Date().getFullYear()} samfranklin.dev`} />
-      </Typography>
-    </Link>
+    <div className="w-full p-4 mt-4">
+      <p className="text-center text-sm font-light text-[#675f57] hover:text-[#332f2a] transition-all duration-200">
+        © {new Date().getFullYear()} samfranklin.dev
+      </p>
+    </div>
   );
 };

@@ -1,29 +1,22 @@
-import React, { lazy } from "react";
+// src/app/App.js
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Home from '../pages/Home';
+import Contact from '../pages/Contact';
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { HelmetMeta } from "./HelmetMeta";
-import { ThemeProvider } from "../components/theme/ThemeProvider";
-import { CssBaseline } from "@material-ui/core";
-import { logCredits } from "../utils/logCredits";
+function App() {
+  return (
+    <Router>
+      <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-b from-[#fafafa] to-[#8C8278]">
+        <div className="flex-1 overflow-hidden">
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/contact" component={Contact} />
+          </Switch>
+        </div>
+      </div>
+    </Router>
+  );
+}
 
-import { Home } from "../pages/Home";
-import { PageNotFound } from "../pages/PageNotFound";
-
-const Resume = lazy(() => import("../pages/Resume"));
-export const App = () => {
-    logCredits();
-
-    return (
-        <ThemeProvider>
-            <CssBaseline />
-            <Router>
-                <HelmetMeta />
-                <Switch>
-                    <Route path="/" exact component={Home} />
-                    <Route path="/resume" component={Resume} />
-                    <Route path="/404" component={PageNotFound} />
-                </Switch>
-            </Router>
-        </ThemeProvider>
-    );
-};
+export default App;
