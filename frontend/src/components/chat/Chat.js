@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import sanitizeHtml from 'sanitize-html';
 import './Chat.css';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
@@ -106,7 +107,7 @@ function Chat() {
     });
 
     try {
-      const response = await axios.post(`https://portfolio-backend-c9ru.onrender.com/api/chat`, 
+      const response = await axios.post(`http://localhost:5003/api/chat`, 
         { question: input },
         { 
           headers: { 
@@ -159,6 +160,23 @@ function Chat() {
     setIsSuggestionsExpanded((prev) => !prev);
   };
 
+  const renderers = {
+    a: ({ node, href, children }) => (
+      <a 
+        href={href} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        style={{ 
+          color: '#2e2b27', 
+          fontWeight: 'bold', 
+          textDecoration: 'underline' 
+        }}
+      >
+        {children}
+      </a>
+    ),
+  };
+
   return (
     <div className="w-[100vh] h-[60vh] flex flex-col overflow-scroll">
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4">
@@ -176,7 +194,7 @@ function Chat() {
                   : 'bg-white/10 hover:bg-white/20'
               } backdrop-blur-sm transition-colors duration-200`}
             >
-              <ReactMarkdown>{sanitizeHtml(msg.text)}</ReactMarkdown>
+              <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(msg.text)}</ReactMarkdown>
             </div>
           </div>
         ))}
@@ -184,7 +202,7 @@ function Chat() {
           <div className="flex justify-start py-2">
             <div className="max-w-xl px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm">
               {currentText ? (
-                <ReactMarkdown>{sanitizeHtml(currentText)}</ReactMarkdown>
+                <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
               ) : (
                 // Display the status message with italics and pulsing tints of #8c8278
                 <div className="italic animate-pulse text-[#554e48]">{statusMessage}</div>
