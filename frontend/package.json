@@ -25,7 +25,6 @@
     "express-rate-limit": "^7.4.1",
     "express-session": "^1.18.1",
     "express-validator": "^7.2.0",
-    "firebase": "^9.23.0",
     "framer-motion": "^4.1.17",
     "helmet": "^8.0.0",
     "ios-inner-height": "^1.1.1",
@@ -44,9 +43,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "deploy": "firebase deploy",
-    "serve": "firebase emulators:start"
+    "build": "react-scripts build"
   },
   "browserslist": {
     "production": [
