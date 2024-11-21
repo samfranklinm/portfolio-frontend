@@ -7,15 +7,17 @@ import { Logo } from "./Logo";
 
 export const LogoLink = () => {
     return (
+        <Zoom in={true} timeout={500}>
             <Link
                 variant="h6"
                 href={Resume.basics.url}
                 underline="none"
                 color="inherit"
                 noWrap
-                className="svg container" // Ensure container class is included
+                className="svg container"
             >
                 <Logo />
             </Link>
+        </Zoom>
     );
 };

@@ -4,7 +4,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import sanitizeHtml from 'sanitize-html';
 import './Chat.css';
-import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
+import { ArrowDownward } from '@mui/icons-material';
+import { motion } from 'framer-motion';
 
 function Chat() {
   const [messages, setMessages] = useState([]);
@@ -43,7 +44,7 @@ function Chat() {
   const typingInterval = useRef(null);
   const messagesEndRef = useRef(null);
   const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
-  const [statusMessage, setStatusMessage] = useState(''); // New state variable
+  const [statusMessage, setStatusMessage] = useState(null); // New state variable
   const statusTimeouts = useRef([]); // To track timeouts
 
   const handleSuggestionClick = (selectedPrompt) => {
@@ -77,7 +78,22 @@ function Chat() {
     // Clear status messages
     statusTimeouts.current.forEach(clearTimeout);
     statusTimeouts.current = [];
-    setStatusMessage('');
+    etStatusMessage(null);
+  };
+
+  const statusMessages = [
+    "Looking up my resume...",
+    "Getting you the best response...",
+    "Almost there...",
+  ];
+
+  const cycleStatusMessages = () => {
+    let messageIndex = 0;
+    const interval = setInterval(() => {
+      setStatusMessage(statusMessages[messageIndex]);
+      messageIndex = (messageIndex + 1) % statusMessages.length;
+    }, 3000);
+    return interval;
   };
 
   const sendMessage = async () => {
@@ -89,22 +105,15 @@ function Chat() {
     setShowSuggestions(false);
     setSuggestedPrompts((prev) => prev.filter((prompt) => prompt !== input));
 
-    // Set initial status messages
-    const statusMessages = [
-      "Hmm... Let me think...",
-      "I think I got it...",
-      "Aha!"
-    ];
+    // Set initial status message immediately
     setStatusMessage(statusMessages[0]);
-
-    statusTimeouts.current.forEach(clearTimeout);
-    statusTimeouts.current = [];
-    statusMessages.slice(1).forEach((msg, index) => {
-      const timeout = setTimeout(() => {
-        setStatusMessage(msg);
-      }, (index + 1) * 2000);
-      statusTimeouts.current.push(timeout);
-    });
+    
+    // Start cycling status messages from the second message
+    let messageIndex = 1;
+    const messageInterval = setInterval(() => {
+      setStatusMessage(statusMessages[messageIndex]);
+      messageIndex = (messageIndex + 1) % statusMessages.length;
+    }, 3000);
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URI}/api/chat`, 
@@ -115,20 +124,25 @@ function Chat() {
           }
         }
       );
+      // Clear the cycling interval
+      clearInterval(messageInterval);
+      setStatusMessage(null);
+      
       if (response.data.sessionId) {
         setSessionId(response.data.sessionId);
       }
       const botMessage = response.data.answer;
       let index = 0;
+      const charsPerIteration = 5; // Add multiple characters per iteration
 
       // Clear status messages before starting to display the bot's response
       statusTimeouts.current.forEach(clearTimeout);
       statusTimeouts.current = [];
-      setStatusMessage('');
+      setStatusMessage(null);
 
       typingInterval.current = setInterval(() => {
         setCurrentText(botMessage.slice(0, index));
-        index++;
+        index += charsPerIteration; // Increment by multiple characters
         if (index > botMessage.length) {
           clearInterval(typingInterval.current);
           setIsGenerating(false);
@@ -140,8 +154,10 @@ function Chat() {
           setShowSuggestions(true);
           setIsSuggestionsExpanded(false);
         }
-      }, 3);
+      }, 0.5); // Reduced from 3ms to 1ms
     } catch (error) {
+      clearInterval(messageInterval);
+      setStatusMessage(null);
       const errorMessage = error.response?.data?.error || 'An unexpected error occurred. Please try again later.';
       setMessages((prev) => [
         ...prev,
@@ -152,7 +168,7 @@ function Chat() {
       setIsSuggestionsExpanded(false);
       statusTimeouts.current.forEach(clearTimeout);
       statusTimeouts.current = [];
-      setStatusMessage('');
+      setStatusMessage(null);
     }
   };
 
@@ -167,7 +183,7 @@ function Chat() {
         target="_blank" 
         rel="noopener noreferrer" 
         style={{ 
-          color: '#2e2b27', 
+          color: '#433e39', 
           fontWeight: 'bold', 
           textDecoration: 'underline' 
         }}
@@ -177,35 +193,54 @@ function Chat() {
     ),
   };
 
-  return (
-    <div className="w-[100vh] h-[60vh] flex flex-col overflow-scroll">
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4">
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`flex ${
-              msg.sender === 'user' ? 'justify-end' : 'justify-start'
-            } py-2`}
-          >
-            <div
-              className={`max-w-xl px-4 py-2 rounded-lg ${
-                msg.sender === 'user'
-                  ? 'bg-[#8C8278]/20 hover:bg-[#8C8278]/30'
-                  : 'bg-white/10 hover:bg-white/20'
-              } backdrop-blur-sm transition-colors duration-200`}
-            >
-              <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(msg.text)}</ReactMarkdown>
+  const renderMessage = (msg, idx) => (
+    <motion.div
+      key={idx}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className={`flex ${
+        msg.sender === 'user' ? 'justify-end' : 'justify-start'
+      } py-2`}
+    >
+      <motion.div
+        layout
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className={`markdown-content ${
+          msg.sender === 'user'
+            ? 'max-w-xl bg-[#8C8278]/25 hover:bg-[#7b7774]/30 text-[#433e39]'
+            : 'w-80vw max-w-[90%] bg-white/5 hover:bg-[#7b7774]/30 text-[#433e39]'
+        } px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-100`}
+      >
+        <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
+          <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
+            {sanitizeHtml(msg.text)}
+          </ReactMarkdown>
+          {msg.sender === 'bot' && (
+            <div className="mt-2 text-xs italic text-[#433e39]/60">
+              This is an AI-generated response, therefore, accuracy is not guaranteed. Please contact me for clarification, if needed.
             </div>
-          </div>
-        ))}
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+
+  return (
+    <div className="w-[100vh] h-[85vh] flex flex-col overflow-scroll text-[#433e39]">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 text-[#433e39]">
+        {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
           <div className="flex justify-start py-2">
-            <div className="max-w-xl px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm">
+            <div className="w-fit max-w-[80%] px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm">
               {currentText ? (
-                <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
+                <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
+                  <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
+                </div>
               ) : (
-                // Display the status message with italics and pulsing tints of #8c8278
-                <div className="italic animate-pulse text-[#554e48]">{statusMessage}</div>
+                <div className="italic text-[11px] animate-pulse text-[#433e39]">{statusMessage}</div>
               )}
             </div>
           </div>
@@ -215,8 +250,17 @@ function Chat() {
       {showSuggestions && (
         <div className="px-4 space-y-2 backdrop-blur-sm mt-2">
           <div className="flex items-center justify-center">
-            <button onClick={toggleSuggestions}>
-              {isSuggestionsExpanded ? <ArrowUpward /> : <ArrowDownward />}
+            <button 
+              onClick={toggleSuggestions}
+              className="transform transition-all duration-700 ease-in hover:scale-110"
+            >
+              <div 
+                className={`transition-transform duration-700 ease-out ${
+                  isSuggestionsExpanded ? 'rotate-0' : 'rotate-180'
+                }`}
+              >
+                <ArrowDownward style={{ color: '#433e39' }} />
+              </div>
             </button>
           </div>
           {isSuggestionsExpanded && (
@@ -236,10 +280,9 @@ function Chat() {
           )}
         </div>
       )}
-      <div className="p-4 bg-white/5 backdrop-blur-sm border-t border-[#8C8278]/20"></div>
-        <div className="flex backdrop-blur-sm bg-white/5 rounded-lg border border-[#8C8278]/20">
+        <div className="flex backdrop-blur-sm bg-white/5 rounded-lg border border-[#8C8278]/20 mt-4">
           <input
-            className="flex-1 p-4 bg-transparent border-none focus:outline-none text-black placeholder-custom"
+            className="flex-1 p-4 bg-transparent border-none focus:outline-none text-[#433e39] placeholder-custom"
             type="text"
             placeholder="Type your message..."
             value={input}
@@ -251,7 +294,7 @@ function Chat() {
             className={`px-8 font-medium ${
               isGenerating
                 ? 'text-red-600 hover:text-red-700'
-                : 'text-[#554e48] hover:text-[#a29a92]'
+                : 'text-[#433e39] hover:text-[#686460]'
             } transition-colors`}
             onClick={isGenerating ? stopTyping : sendMessage}
           >

@@ -1,4 +1,3 @@
-
 .svgHover {
     width: 100%;
     height: 100%;
@@ -17,13 +16,14 @@
 .svg {
     width: 120px;
     height: 120px;
-    position: absolute;
+    position: fixed;
     top: 40px;
-    left: -510px;
+    left: -480px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.5s ease;
+    z-index: 1000;
 }
 
 .svg:hover {

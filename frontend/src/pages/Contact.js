@@ -9,7 +9,7 @@ function Contact() {
         <input className="p-2 border" type="text" placeholder="Name" />
         <input className="p-2 border" type="email" placeholder="Email" />
         <textarea className="p-2 border" placeholder="Message" rows="5"></textarea>
-        <button className="p-2 bg-black text-white hover:bg-gray-800">Send</button>
+        <button className="p-2 bg-black text-[#8e8b88] hover:bg-[#8e8b88]-800">Send</button>
       </form>
     </div>
   );

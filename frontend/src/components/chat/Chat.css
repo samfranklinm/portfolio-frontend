@@ -35,3 +35,29 @@ button {
 button:focus {
   outline: none;
 }
+
+.markdown-content * {
+  color: #433e39 !important;
+}
+
+/* Markdown list styling */
+.markdown-content ul,
+.markdown-content ol {
+  color: #433e39;
+  margin-left: 1.5em;
+}
+
+.markdown-content ul li::marker,
+.markdown-content ol li::marker {
+  color: #433e39;
+}
+
+.markdown-content li {
+  color: #433e39;
+  margin: 0.25em 0;
+}
+
+.markdown-content li > p {
+  margin: 0;
+  display: inline;
+}
