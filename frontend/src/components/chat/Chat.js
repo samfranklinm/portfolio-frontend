@@ -107,7 +107,7 @@ function Chat() {
     });
 
     try {
-      const response = await axios.post(`http://localhost:5003/api/chat`, 
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URI}/api/chat`, 
         { question: input },
         { 
           headers: { 
