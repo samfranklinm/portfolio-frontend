@@ -106,7 +106,7 @@ function Chat() {
     });
 
     try {
-      const response = await axios.post(`http://localhost:5003/api/chat`, 
+      const response = await axios.post(`https://portfolio-backend-c9ru.onrender.com/api/chat`, 
         { question: input },
         { 
           headers: { 
