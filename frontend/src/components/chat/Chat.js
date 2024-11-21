@@ -96,15 +96,12 @@ function Chat() {
     ];
     setStatusMessage(statusMessages[0]);
 
-    // Clear any existing timeouts
     statusTimeouts.current.forEach(clearTimeout);
     statusTimeouts.current = [];
-
-    // Schedule status message updates
     statusMessages.slice(1).forEach((msg, index) => {
       const timeout = setTimeout(() => {
         setStatusMessage(msg);
-      }, (index + 1) * 2000); // Update every 2 seconds
+      }, (index + 1) * 2000);
       statusTimeouts.current.push(timeout);
     });
 
@@ -152,7 +149,6 @@ function Chat() {
       setIsGenerating(false);
       setShowSuggestions(true);
       setIsSuggestionsExpanded(false);
-      // Clear status messages on error
       statusTimeouts.current.forEach(clearTimeout);
       statusTimeouts.current = [];
       setStatusMessage('');
