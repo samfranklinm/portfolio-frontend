@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -8,35 +7,15 @@ const pdf = require('pdf-parse');
 const rateLimit = require('express-rate-limit');
 const session = require('express-session');
 const { body, validationResult } = require('express-validator');
-const RedisStore = require('connect-redis').default; // Updated usage
 const helmet = require('helmet');
-const redis = require('redis');
-const crypto = require('crypto'); // Import crypto
 const dotenv = require('dotenv');
-dotenv.config(); // Load environment variables
+dotenv.config();
 
-// Initialize Redis Client without password
-const redisClient = redis.createClient({
-  host: 'localhost',
-  port: 5000 // Ensure this port matches your Redis configuration
-});
-
-redisClient.on('error', (err) => {
-  console.error('Redis error: ', err);
-});
-
-redisClient.connect().catch(console.error); // Ensure Redis client is connected
-
-// Initialize Express App
 const app = express();
+app.set('trust proxy', 1);
 
-// Configure trust proxy
-app.set('trust proxy', 1); // Trust first proxy
-const allowedOrigins = ['http://localhost:3000', 'https://samfranklin.dev'];
-for (let port = 5000; port <= 5010; port++) {
-  allowedOrigins.push(`http://localhost:${port}`);
-}
-// Configure CORS
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:5004','http://localhost:5002','http://localhost:5003', 'https://samfranklin.dev'];
+
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -49,35 +28,28 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
-// Use Helmet for secure HTTP headers
 app.use(helmet());
 
-// Configure Rate Limiting
 const chatLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 20, // limit each IP to 20 requests per windowMs
+  windowMs: 10 * 60 * 1000,
+  max: 20,
   message: 'Too many requests from this IP, please try again after 10 minutes'
 });
 
-// Configure Body Parser
 app.use(bodyParser.json());
 const XAI_API_KEY = process.env.XAI_API_KEY;
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
-const SESSION_SECRET = process.env.SESSION_SECRET;
-// Configure Session Management with Redis
+
 app.use(session({
-  store: new RedisStore({ client: redisClient }),
-  secret: process.env.SESSION_SECRET || 'your-secret-key', // Use a strong secret in production
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: { 
-    secure: process.env.NODE_ENV === 'production', // true in production with HTTPS
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'lax'
   }
 }));
 
-// Load Resume Text
 let resumeText = '';
 
 const loadResume = async () => {
@@ -93,14 +65,10 @@ const loadResume = async () => {
 
 loadResume();
 
-// Helper Functions
-
-function getSystemPrompts(isNewSession, resumeText) {
+function getSystemPrompts(resumeText) {
   const basePrompt = {
     role: "system", 
-    content: `${process.env.BASE_PERSONA} ${
-      isNewSession ? process.env.GREETING_PERSONA : process.env.SUBSEQUENT_PERSONA
-    } Always conclude responses with an appropriate follow-up unless context clearly requires otherwise.`
+    content: `${process.env.BASE_PERSONA}`
   };
   
   const resumePrompt = {
@@ -111,15 +79,12 @@ function getSystemPrompts(isNewSession, resumeText) {
   return [basePrompt, resumePrompt];
 }
 
-function generateUUID() {
-  return crypto.randomUUID();
-}
+const greetings = require('./config/greetings.json').greetings;
 
-// Chat Endpoint
 app.post('/api/chat', 
   chatLimiter,
   body('question').isString().trim().escape(),
-  async (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -132,10 +97,16 @@ app.post('/api/chat',
       session.history = [];
     }
 
-    const question = req.body.question;
+    const question = req.body.question.trim().toLowerCase();
+    const isGreeting = ['hi', 'hello', 'hola', 'howdy', 'hey'].some(greet => question.startsWith(greet));
+
+    if (isGreeting) {
+      const greetingMessage = greetings[Math.floor(Math.random() * greetings.length)];
+      return res.json({ answer: greetingMessage });
+    }
 
     const messages = [
-      ...getSystemPrompts(isNewSession, resumeText),
+      ...getSystemPrompts(resumeText),
       ...session.history,
       {
         role: "user",
@@ -151,20 +122,18 @@ app.post('/api/chat',
         stream: false
       }, {
         headers: {
-          'Authorization': `Bearer ${XAI_API_KEY}`, // Ensure this is set in .env
+          'Authorization': `Bearer ${XAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
       });
 
       const answer = response.data.choices[0].message.content;
       
-      // Update conversation history
       session.history.push(
         { role: "user", content: question },
         { role: "assistant", content: answer }
       );
 
-      // Keep history manageable
       if (session.history.length > 10) {
         session.history = session.history.slice(-10);
       }
@@ -189,11 +158,10 @@ app.post('/api/chat',
   }
 );
 
-// Error Handling Middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack); // Log detailed error on the server
+app.use((err,res) => {
+  console.error(err.stack);
   if (!res.headersSent) {
-    res.status(500).json({ error: 'Something went wrong! Please try again later.' }); // Generic message to the client
+    res.status(500).json({ error: 'Something went wrong! Please try again later.' });
   }
 });
 
@@ -202,3 +170,5 @@ const PORT = process.env.PORT || 5003;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = app;
