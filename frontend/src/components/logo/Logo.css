@@ -16,26 +16,30 @@
 .svg {
     width: 120px;
     height: 120px;
-    position: absolute;
+    position: fixed;
     top: 25px;
     left: -530px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.5s ease;
     z-index: 1000;
 }
 
 .svg:hover {
     z-index: 1000;
     color: inherit;
+    transition: all 0.5s ease;
+    width: 120px;
 }
 
 @media (max-width: 640px) {
     .svg {
         width: 70px;
         height: 90px;
-        top: 5px;
-        left: -160px;
+        top: 0vh;
+        left: -38vw;  /* Use viewport width instead of fixed pixels */
+        position: absolute; /* Change to absolute positioning for mobile */
         z-index: 1000;
     }
 }
