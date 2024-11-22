@@ -7,7 +7,7 @@ import { Logo } from "./Logo";
 
 export const LogoLink = () => {
     return (
-        <Zoom in={true} timeout={500}>
+        <Zoom in={true} timeout={1300}>
             <Link
                 variant="h6"
                 href={Resume.basics.url}

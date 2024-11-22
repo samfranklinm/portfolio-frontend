@@ -40,11 +40,29 @@ button:focus {
   color: #433e39 !important;
 }
 
+.markdown-content {
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .markdown-content {
+    font-size: 1rem;
+  }
+}
+
 /* Markdown list styling */
 .markdown-content ul,
 .markdown-content ol {
   color: #433e39;
-  margin-left: 1.5em;
+  margin-left: 1em;
+  padding-right: 1em;
+}
+
+@media (min-width: 640px) {
+  .markdown-content ul,
+  .markdown-content ol {
+    margin-left: 1.5em;
+  }
 }
 
 .markdown-content ul li::marker,
@@ -60,4 +78,34 @@ button:focus {
 .markdown-content li > p {
   margin: 0;
   display: inline;
+}
+
+/* Smooth scrolling container */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar but keep functionality */
+.scroll-smooth::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Fade effect for messages */
+.fade-edges {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
 }

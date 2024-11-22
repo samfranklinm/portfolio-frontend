@@ -23,22 +23,25 @@ function Home() {
   }, [controls]);
 
   const textVariants = {
-    hidden: { opacity: 0, y: -200},
+    hidden: { 
+      opacity: 0, 
+      y: -200
+    },
     showTexts: {
       opacity: 1,
-      y: 350,
+      y: 50,
       transition: { 
-        duration: 2,
+        duration: 1.2,
         ease: "easeOut"
       }
     },
     hideTexts: {
       opacity: 0,
-      y: 0,
+      y: -100,
       transition: { 
-        duration: 0.8,
+        duration: 0.6,
         ease: "easeIn",
-        delay: 1
+        delay: 0.5
       }
     }
   };
@@ -56,14 +59,14 @@ function Home() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#dbd8d5] to-[#8C8278]">
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-[#dbd8d5] to-[#8C8278]">
       <LogoLink />
-      <div className="text-[#35312d] w-100 max-w-3xl text-center mb-4 mt-20 flex-grow flex flex-col items-center justify-center">
+      <div className="absolute top-[20%] text-[#35312d] w-full max-w-3xl text-center px-4">
         <motion.h1
           variants={textVariants}
           initial="hidden"
           animate={controls}
-          className="text-5xl font-light mb-4 tracking-tight"
+          className="text-3xl sm:text-5xl font-light mb-4 tracking-tight"
         >
           You made it!
         </motion.h1>
@@ -90,7 +93,7 @@ function Home() {
         variants={chatVariants}
         initial="hidden"
         animate={controls}
-        className="w-100 text-[#35312d] max-w-4xl flex-none h-[85vh] flex items-center justify-center"
+        className="w-full text-[#35312d] lg:max-w-4xl h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4"
       >
         <Chat />
       </motion.div>

@@ -60,7 +60,32 @@ function Chat() {
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      const scrollContainer = messagesEndRef.current.parentElement;
+      const scrollHeight = scrollContainer.scrollHeight;
+      
+      // Smooth scroll animation
+      const start = scrollContainer.scrollTop;
+      const end = scrollHeight - scrollContainer.clientHeight;
+      const duration = 500; // ms
+      const startTime = performance.now();
+      
+      const scroll = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease out cubic function
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        
+        scrollContainer.scrollTop = start + (end - start) * easeOut;
+        
+        if (progress < 1) {
+          requestAnimationFrame(scroll);
+        }
+      };
+      
+      requestAnimationFrame(scroll);
+    }
   };
 
   useEffect(() => {
@@ -229,8 +254,8 @@ function Chat() {
   );
 
   return (
-    <div className="w-[100vh] h-[85vh] flex flex-col overflow-scroll text-[#433e39]">
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 text-[#433e39]">
+    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex flex-col overflow-hidden text-[#433e39]">
+      <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4 text-[#433e39] max-w-[100vw] lg:max-w-none fade-edges">
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
           <div className="flex justify-start py-2">
@@ -248,7 +273,7 @@ function Chat() {
         <div ref={messagesEndRef} />
       </div>
       {showSuggestions && (
-        <div className="px-4 space-y-2 backdrop-blur-sm mt-2">
+        <div className="px-2 sm:px-4 space-y-2 backdrop-blur-sm mt-2 max-w-[100vw] lg:max-w-none">
           <div className="flex items-center justify-center">
             <button 
               onClick={toggleSuggestions}
@@ -264,13 +289,13 @@ function Chat() {
             </button>
           </div>
           {isSuggestionsExpanded && (
-            <div>
+            <div className="grid grid-cols-1 gap-2">
               {suggestedPrompts
                 .filter(suggestion => !suggestion.used)
                 .map((suggestion, index) => (
                   <button
                     key={index}
-                    className="px-4 py-2 rounded-lg w-full text-left bg-[#a29a92] bg-opacity-50 hover:bg-opacity-90"
+                    className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base bg-[#a29a92] bg-opacity-50 hover:bg-opacity-90"
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
                     {suggestion.title}
@@ -280,28 +305,28 @@ function Chat() {
           )}
         </div>
       )}
-        <div className="flex backdrop-blur-sm bg-white/5 rounded-lg border border-[#8C8278]/20 mt-4">
-          <input
-            className="flex-1 p-4 bg-transparent border-none focus:outline-none text-[#433e39] placeholder-custom"
-            type="text"
-            placeholder="Type your message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && !isGenerating && sendMessage()}
-            disabled={isGenerating}
-          />
-          <button
-            className={`px-8 font-medium ${
-              isGenerating
-                ? 'text-red-600 hover:text-red-700'
-                : 'text-[#433e39] hover:text-[#686460]'
-            } transition-colors`}
-            onClick={isGenerating ? stopTyping : sendMessage}
-          >
-            {isGenerating ? 'Stop' : 'Send'}
-          </button>
-        </div>
+      <div className="flex backdrop-blur-sm bg-white/5 rounded-lg border border-[#8C8278]/20 mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none">
+        <input
+          className="flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base text-[#433e39] placeholder-custom"
+          type="text"
+          placeholder="Type your message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && !isGenerating && sendMessage()}
+          disabled={isGenerating}
+        />
+        <button
+          className={`px-4 sm:px-8 text-sm sm:text-base font-medium ${
+            isGenerating
+              ? 'text-red-600 hover:text-red-700'
+              : 'text-[#433e39] hover:text-[#686460]'
+          } transition-colors`}
+          onClick={isGenerating ? stopTyping : sendMessage}
+        >
+          {isGenerating ? 'Stop' : 'Send'}
+        </button>
       </div>
+    </div>
   );
 }
 
