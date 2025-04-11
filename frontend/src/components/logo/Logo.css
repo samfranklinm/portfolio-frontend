@@ -1,12 +1,12 @@
 .svgHover {
     width: 100%;
     height: 100%;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease-out;
 }
 
 .svgHover path {
     fill: #433e39;
-    transition: all 0.5s ease;
+    transition: fill 0.3s ease-out;
 }
 
 .container:hover .svgHover path {
@@ -22,15 +22,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.5s ease;
     z-index: 1000;
 }
 
 .svg:hover {
     z-index: 1000;
     color: inherit;
-    transition: all 0.5s ease;
-    width: 120px;
+    cursor: pointer;
 }
 
 @media (max-width: 640px) {

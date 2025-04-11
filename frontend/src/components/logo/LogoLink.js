@@ -15,6 +15,12 @@ export const LogoLink = () => {
                 color="inherit"
                 noWrap
                 className="svg container"
+                sx={{ 
+                    display: 'block', // Ensures block-level rendering
+                    '&:hover': {
+                        backgroundColor: 'transparent' // Prevents MUI hover background
+                    }
+                }}
             >
                 <Logo />
             </Link>
