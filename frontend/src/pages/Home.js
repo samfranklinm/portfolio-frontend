@@ -77,7 +77,7 @@ function Home() {
           transition={{ delay: 0.5 }}
           className="text-xl text-[#35312d]-500 font-light"
         >
-          I'm Frank. Nice to e-meet you.
+          I'm Sam. Nice to e-meet you.
         </motion.h2>
         <motion.h3
           variants={textVariants}
