@@ -326,8 +326,8 @@ function Chat() {
       </AnimatePresence>
 
       {/* Input Area */}
-      <div className="px-6 py-4 border-t border-agent-accent/20 bg-agent-darker/50">
-        <div className="flex items-center gap-3 bg-agent-gray/50 rounded-xl border border-agent-accent/20 focus-within:border-agent-accent/40 transition-all px-4 py-3">
+      <div className="px-6 py-4 border-t border-agent-accent/30 bg-agent-darker/70">
+        <div className="flex items-center gap-3 bg-agent-gray/70 rounded-xl border border-agent-accent/30 focus-within:border-agent-accent/50 transition-all px-4 py-3">
           <input
             className="flex-1 bg-transparent border-none focus:outline-none text-agent-light placeholder-agent-light/40 text-sm"
             type="text"
