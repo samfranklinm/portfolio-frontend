@@ -102,7 +102,10 @@ function Home() {
         variants={chatVariants}
         initial="hidden"
         animate={controls}
-        className="w-full text-[#35312d] lg:max-w-4xl h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4"
+        className="w-full text-[#35312d] lg:max-w-4xl h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4 relative"
+        style={{
+          filter: 'drop-shadow(0 20px 40px rgba(67, 62, 57, 0.15))'
+        }}
       >
         <Chat />
       </motion.div>
