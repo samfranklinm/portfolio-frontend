@@ -388,18 +388,20 @@ function Chat() {
         </div>
       )}
       <div 
-        className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-300"
+        className="flex rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-300"
         style={{
-          background: 'rgba(255, 255, 255, 0.08)',
-          borderColor: 'rgba(140, 130, 120, 0.25)',
+          background: 'rgba(255, 255, 255, 0.12)',
+          backdropFilter: 'blur(15px) saturate(160%)',
+          WebkitBackdropFilter: 'blur(15px) saturate(160%)',
+          borderColor: 'rgba(255, 255, 255, 0.25)',
           boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
         }}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.4)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
           e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15), 0 0 0 3px rgba(140, 130, 120, 0.08)';
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.25)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
           e.currentTarget.style.boxShadow = '0 2px 8px rgba(140, 130, 120, 0.08)';
         }}
       >
