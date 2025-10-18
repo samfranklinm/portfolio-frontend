@@ -378,11 +378,22 @@ function Chat() {
           )}
         </div>
       )}
-      <div className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-200" style={{
-        background: 'rgba(255, 255, 255, 0.08)',
-        borderColor: 'rgba(140, 130, 120, 0.25)',
-        boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
-      }}>
+      <div 
+        className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-300"
+        style={{
+          background: 'rgba(255, 255, 255, 0.08)',
+          borderColor: 'rgba(140, 130, 120, 0.25)',
+          boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.4)';
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15), 0 0 0 3px rgba(140, 130, 120, 0.08)';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.25)';
+          e.currentTarget.style.boxShadow = '0 2px 8px rgba(140, 130, 120, 0.08)';
+        }}
+      >
         <input
           className="flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base text-[#433e39] placeholder-custom"
           type="text"
