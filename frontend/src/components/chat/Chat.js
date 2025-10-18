@@ -264,8 +264,12 @@ function Chat() {
   );
 
   return (
-    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex flex-col overflow-hidden text-[#433e39] rounded-xl shadow-lg" style={{
-      boxShadow: '0 8px 32px rgba(140, 130, 120, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex flex-col overflow-hidden text-[#433e39] rounded-xl" style={{
+      background: 'rgba(255, 255, 255, 0.12)',
+      backdropFilter: 'blur(20px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+      border: '1px solid rgba(255, 255, 255, 0.18)',
+      boxShadow: '0 8px 32px rgba(140, 130, 120, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
     }}>
       <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4 text-[#433e39] max-w-[100vw] lg:max-w-none fade-edges">
         {messages.map((msg, idx) => renderMessage(msg, idx))}
