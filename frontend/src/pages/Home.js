@@ -60,6 +60,15 @@ function Home() {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-[#dbd8d5] to-[#8C8278]">
+      {/* Subtle grid pattern overlay */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
+        backgroundImage: `
+          linear-gradient(rgba(67, 62, 57, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(67, 62, 57, 0.03) 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px'
+      }} />
+      
       <LogoLink />
       <div className="absolute top-[20%] text-[#35312d] w-full max-w-3xl text-center px-4">
         <motion.h1
