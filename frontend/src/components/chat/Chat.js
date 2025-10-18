@@ -180,6 +180,8 @@ function Chat() {
       }, 20); // Smoother, more natural typing speed
     } catch (error) {
       clearInterval(messageInterval);
+      clearInterval(progressInterval);
+      setThinkingProgress(0);
       setStatusMessage(null);
       const errorMessage = error.response?.data?.error || 'An unexpected error occurred. Please try again later.';
       setMessages((prev) => [
