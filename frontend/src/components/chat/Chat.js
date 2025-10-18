@@ -7,7 +7,7 @@ import './Chat.css';
 import { ArrowDownward } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
-function Chat() {
+function Chat({ darkMode = false }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
