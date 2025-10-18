@@ -245,13 +245,23 @@ function Chat() {
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
           <div className="flex justify-start py-2">
-            <div className="w-fit max-w-[80%] px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm">
+            <div className="w-fit max-w-[80%] px-4 py-2 rounded-lg backdrop-blur-sm" style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 2px 8px rgba(140, 130, 120, 0.1)'
+            }}>
               {currentText ? (
                 <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
                   <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
                 </div>
               ) : (
-                <div className="italic text-[11px] animate-pulse text-[#433e39]">{statusMessage}</div>
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#8C8278] animate-pulse" style={{animationDelay: '0ms'}} />
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#8C8278] animate-pulse" style={{animationDelay: '200ms'}} />
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#8C8278] animate-pulse" style={{animationDelay: '400ms'}} />
+                  </div>
+                  <span className="italic text-[11px] text-[#433e39]/70">{statusMessage}</span>
+                </div>
               )}
             </div>
           </div>
