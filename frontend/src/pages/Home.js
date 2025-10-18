@@ -11,14 +11,22 @@ function Home() {
 
   useEffect(() => {
     const sequence = async () => {
-      // Show intro text
-      await controls.start('showTexts');
-      await new Promise(resolve => setTimeout(resolve, 2500));
-      // Fade out intro
-      await controls.start('hideTexts');
-      // Show main interface
-      setShowInterface(true);
-      await controls.start('showInterface');
+      try {
+        // Show intro text
+        await controls.start('showTexts');
+        await new Promise(resolve => setTimeout(resolve, 2500));
+        // Fade out intro
+        await controls.start('hideTexts');
+        // Wait a bit before showing interface
+        await new Promise(resolve => setTimeout(resolve, 300));
+        // Show main interface
+        setShowInterface(true);
+        await controls.start('showInterface');
+      } catch (error) {
+        console.error('Animation sequence error:', error);
+        // Fallback: show interface immediately
+        setShowInterface(true);
+      }
     };
     sequence();
   }, [controls]);
