@@ -31,29 +31,31 @@ function Home() {
       opacity: 1,
       y: 50,
       transition: { 
-        duration: 1.2,
-        ease: "easeOut"
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1]
       }
     },
     hideTexts: {
       opacity: 0,
       y: -100,
+      scale: 0.98,
       transition: { 
-        duration: 0.6,
-        ease: "easeIn",
-        delay: 0.5
+        duration: 0.5,
+        ease: [0.43, 0.13, 0.23, 0.96],
+        delay: 0.3
       }
     }
   };
 
   const chatVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
+    hidden: { opacity: 0, scale: 0.96, y: 10 },
     showChat: {
       opacity: 1,
       scale: 1,
+      y: 0,
       transition: { 
-        duration: 0.8,
-        ease: "easeOut" 
+        duration: 0.7,
+        ease: [0.25, 0.1, 0.25, 1]
       }
     }
   };
