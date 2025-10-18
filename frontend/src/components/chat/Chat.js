@@ -163,7 +163,7 @@ function Chat() {
           setShowSuggestions(true);
           setIsSuggestionsExpanded(false);
         }
-      }, 0.5);
+      }, 20); // Smoother, more natural typing speed
     } catch (error) {
       clearInterval(messageInterval);
       setStatusMessage(null);
