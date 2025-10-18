@@ -219,9 +219,9 @@ function Chat() {
   );
 
   return (
-    <div className="h-full flex flex-col glow-card rounded-2xl backdrop-blur-xl overflow-hidden" data-testid="chat-container">
+    <div className="h-full flex flex-col glow-card rounded-2xl backdrop-blur-xl overflow-hidden shadow-xl shadow-agent-accent/10" data-testid="chat-container">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-agent-accent/20 bg-agent-darker/50">
+      <div className="px-6 py-4 border-b border-agent-accent/30 bg-agent-darker/70">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -230,10 +230,10 @@ function Chat() {
             </div>
             <div>
               <h2 className="text-agent-light font-medium text-sm">Professional AI Agent</h2>
-              <p className="text-agent-light/50 text-xs">Resume-trained • Real-time responses</p>
+              <p className="text-agent-light/60 text-xs">Resume-trained • Real-time responses</p>
             </div>
           </div>
-          <div className="text-xs text-agent-light/30">
+          <div className="text-xs text-agent-light/40">
             {messages.length} interactions
           </div>
         </div>
