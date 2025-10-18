@@ -309,7 +309,22 @@ function Chat() {
                 .map((suggestion, index) => (
                   <button
                     key={index}
-                    className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base bg-[#a29a92] bg-opacity-50 hover:bg-opacity-90"
+                    className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base transition-all duration-200"
+                    style={{
+                      background: 'rgba(162, 154, 146, 0.5)',
+                      boxShadow: '0 2px 8px rgba(67, 62, 57, 0.1)',
+                      border: '1px solid rgba(67, 62, 57, 0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.7)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(67, 62, 57, 0.15)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.5)';
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(67, 62, 57, 0.1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
                     {suggestion.title}
