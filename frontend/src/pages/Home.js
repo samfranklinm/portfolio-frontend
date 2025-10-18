@@ -152,7 +152,7 @@ function Home() {
           filter: 'drop-shadow(0 20px 40px rgba(67, 62, 57, 0.15))'
         }}
       >
-        <Chat />
+        <Chat darkMode={darkMode} />
       </motion.div>
       <FooterText />
     </div>
