@@ -269,7 +269,13 @@ function Chat() {
       <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4 text-[#433e39] max-w-[100vw] lg:max-w-none fade-edges">
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
-          <div className="flex justify-start py-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="flex justify-start py-2"
+          >
             <div className="w-fit max-w-[80%] px-4 py-2 rounded-lg backdrop-blur-sm" style={{
               background: 'rgba(255, 255, 255, 0.15)',
               boxShadow: '0 2px 8px rgba(140, 130, 120, 0.1)'
@@ -279,17 +285,34 @@ function Chat() {
                   <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <motion.div 
+                  className="flex items-center gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
                   <div className="flex gap-1">
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#8C8278] animate-pulse" style={{animationDelay: '0ms'}} />
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#8C8278] animate-pulse" style={{animationDelay: '200ms'}} />
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#8C8278] animate-pulse" style={{animationDelay: '400ms'}} />
+                    <motion.div 
+                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <motion.div 
+                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                    />
+                    <motion.div 
+                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+                    />
                   </div>
                   <span className="italic text-[11px] text-[#433e39]/70">{statusMessage}</span>
-                </div>
+                </motion.div>
               )}
             </div>
-          </div>
+          </motion.div>
         )}
         <div ref={messagesEndRef} />
       </div>
