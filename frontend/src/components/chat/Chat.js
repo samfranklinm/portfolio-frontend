@@ -119,8 +119,17 @@ function Chat() {
     setIsGenerating(true);
     setShowSuggestions(false);
     setSuggestedPrompts((prev) => prev.filter((prompt) => prompt !== input));
+    setThinkingProgress(0);
 
     setStatusMessage(statusMessages[0]);
+    
+    // Simulate thinking progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress > 90) progress = 90;
+      setThinkingProgress(progress);
+    }, 300);
     
     let messageIndex = 1;
     const messageInterval = setInterval(() => {
