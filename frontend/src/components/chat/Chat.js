@@ -4,8 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import sanitizeHtml from 'sanitize-html';
 import './Chat.css';
-import { ArrowDownward } from '@mui/icons-material';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function Chat() {
   const [messages, setMessages] = useState([]);
@@ -18,38 +17,41 @@ function Chat() {
     {
       title: "Professional Journey",
       prompt: "Walk me through your career journey, highlighting key achievements at each role.",
+      icon: "🚀",
       used: false
     },
     {
       title: "Technical Skills",
       prompt: "What are your core technical skills and how have you applied them in real projects?",
+      icon: "⚡",
       used: false
     },
     {
       title: "Impactful Project",
       prompt: "Describe your most impactful project and the specific challenges you overcame.",
+      icon: "💡",
       used: false
     },
     {
       title: "Career Goals",
       prompt: "Where do you see your career heading and what excites you most about that path?",
+      icon: "🎯",
       used: false
     },
     {
       title: "Contact Information",
       prompt: "What's the best way to reach you for professional opportunities?",
+      icon: "📧",
       used: false
     }
   ]);
   const typingInterval = useRef(null);
   const messagesEndRef = useRef(null);
-  const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
-  const [statusMessage, setStatusMessage] = useState(null); // New state variable
-  const statusTimeouts = useRef([]); // To track timeouts
+  const [statusMessage, setStatusMessage] = useState(null);
+  const statusTimeouts = useRef([]);
 
   const handleSuggestionClick = (selectedPrompt) => {
     setInput(selectedPrompt.prompt);
-    setShowSuggestions(false);
     setSuggestedPrompts(prevPrompts =>
       prevPrompts.map(p => 
         p.prompt === selectedPrompt.prompt 
@@ -61,30 +63,7 @@ function Chat() {
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
-      const scrollContainer = messagesEndRef.current.parentElement;
-      const scrollHeight = scrollContainer.scrollHeight;
-      
-      // Smooth scroll animation
-      const start = scrollContainer.scrollTop;
-      const end = scrollHeight - scrollContainer.clientHeight;
-      const duration = 500; // ms
-      const startTime = performance.now();
-      
-      const scroll = (currentTime) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Ease out cubic function
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        
-        scrollContainer.scrollTop = start + (end - start) * easeOut;
-        
-        if (progress < 1) {
-          requestAnimationFrame(scroll);
-        }
-      };
-      
-      requestAnimationFrame(scroll);
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -100,26 +79,17 @@ function Chat() {
       { sender: 'bot', text: currentText },
     ]);
     setCurrentText('');
-    // Clear status messages
     statusTimeouts.current.forEach(clearTimeout);
     statusTimeouts.current = [];
-    etStatusMessage(null);
+    setStatusMessage(null);
   };
 
   const statusMessages = [
-    "Looking up my resume...",
-    "Getting you the best response...",
-    "Almost there...",
+    "Analyzing resume data...",
+    "Processing context...",
+    "Generating insights...",
+    "Finalizing response..."
   ];
-
-  const cycleStatusMessages = () => {
-    let messageIndex = 0;
-    const interval = setInterval(() => {
-      setStatusMessage(statusMessages[messageIndex]);
-      messageIndex = (messageIndex + 1) % statusMessages.length;
-    }, 3000);
-    return interval;
-  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -128,17 +98,14 @@ function Chat() {
     setInput('');
     setIsGenerating(true);
     setShowSuggestions(false);
-    setSuggestedPrompts((prev) => prev.filter((prompt) => prompt !== input));
 
-    // Set initial status message immediately
     setStatusMessage(statusMessages[0]);
     
-    // Start cycling status messages from the second message
     let messageIndex = 1;
     const messageInterval = setInterval(() => {
       setStatusMessage(statusMessages[messageIndex]);
       messageIndex = (messageIndex + 1) % statusMessages.length;
-    }, 3000);
+    }, 2000);
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URI}/api/chat`, 
@@ -149,25 +116,25 @@ function Chat() {
           }
         }
       );
-      // Clear the cycling interval
+      
       clearInterval(messageInterval);
       setStatusMessage(null);
       
       if (response.data.sessionId) {
         setSessionId(response.data.sessionId);
       }
+      
       const botMessage = response.data.answer;
       let index = 0;
-      const charsPerIteration = 5; // Add multiple characters per iteration
+      const charsPerIteration = 3;
 
-      // Clear status messages before starting to display the bot's response
       statusTimeouts.current.forEach(clearTimeout);
       statusTimeouts.current = [];
       setStatusMessage(null);
 
       typingInterval.current = setInterval(() => {
         setCurrentText(botMessage.slice(0, index));
-        index += charsPerIteration; // Increment by multiple characters
+        index += charsPerIteration;
         if (index > botMessage.length) {
           clearInterval(typingInterval.current);
           setIsGenerating(false);
@@ -177,9 +144,8 @@ function Chat() {
           ]);
           setCurrentText('');
           setShowSuggestions(true);
-          setIsSuggestionsExpanded(false);
         }
-      }, 0.5); // Reduced from 3ms to 1ms
+      }, 15);
     } catch (error) {
       clearInterval(messageInterval);
       setStatusMessage(null);
@@ -190,15 +156,10 @@ function Chat() {
       ]);
       setIsGenerating(false);
       setShowSuggestions(true);
-      setIsSuggestionsExpanded(false);
       statusTimeouts.current.forEach(clearTimeout);
       statusTimeouts.current = [];
       setStatusMessage(null);
     }
-  };
-
-  const toggleSuggestions = () => {
-    setIsSuggestionsExpanded((prev) => !prev);
   };
 
   const renderers = {
@@ -207,11 +168,7 @@ function Chat() {
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        style={{ 
-          color: '#433e39', 
-          fontWeight: 'bold', 
-          textDecoration: 'underline' 
-        }}
+        className="text-agent-accent hover:text-agent-glow transition-colors underline"
       >
         {children}
       </a>
@@ -221,110 +178,181 @@ function Chat() {
   const renderMessage = (msg, idx) => (
     <motion.div
       key={idx}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`flex ${
-        msg.sender === 'user' ? 'justify-end' : 'justify-start'
-      } py-2`}
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
     >
-      <motion.div
-        layout
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className={`markdown-content ${
+      <div className={`relative group ${
+        msg.sender === 'user'
+          ? 'max-w-xl'
+          : 'max-w-[85%]'
+      }`}>
+        {/* Message bubble */}
+        <div className={`${
           msg.sender === 'user'
-            ? 'max-w-xl bg-[#8C8278]/25 hover:bg-[#7b7774]/30 text-[#433e39]'
-            : 'w-80vw max-w-[90%] bg-white/5 hover:bg-[#7b7774]/30 text-[#433e39]'
-        } px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-100`}
-      >
-        <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
-          <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
-            {sanitizeHtml(msg.text)}
-          </ReactMarkdown>
+            ? 'bg-gradient-to-br from-agent-accent to-agent-glow text-white'
+            : 'bg-agent-gray border border-agent-accent/20 text-agent-light'
+        } px-5 py-3 rounded-2xl backdrop-blur-xl transition-all duration-200 group-hover:shadow-lg ${
+          msg.sender === 'bot' ? 'group-hover:border-agent-accent/40' : ''
+        }`}>
+          <div className="prose prose-sm max-w-none prose-invert prose-headings:text-inherit prose-p:text-inherit prose-strong:text-inherit prose-a:text-agent-glow">
+            <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
+              {sanitizeHtml(msg.text)}
+            </ReactMarkdown>
+          </div>
           {msg.sender === 'bot' && (
-            <div className="mt-2 text-xs italic text-[#433e39]/60">
-              This is an AI-generated response, therefore, accuracy is not guaranteed. Please contact me for clarification, if needed.
+            <div className="mt-3 pt-2 border-t border-agent-light/10 text-[10px] text-agent-light/40 italic">
+              AI-generated • Verify important details
             </div>
           )}
         </div>
-      </motion.div>
+        
+        {/* Timestamp */}
+        <div className={`text-[10px] text-agent-light/30 mt-1 ${
+          msg.sender === 'user' ? 'text-right' : 'text-left'
+        }`}>
+          {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </div>
+      </div>
     </motion.div>
   );
 
   return (
-    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex flex-col overflow-hidden text-[#433e39]">
-      <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4 text-[#433e39] max-w-[100vw] lg:max-w-none fade-edges">
-        {messages.map((msg, idx) => renderMessage(msg, idx))}
-        {isGenerating && (
-          <div className="flex justify-start py-2">
-            <div className="w-fit max-w-[80%] px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm">
-              {currentText ? (
-                <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
-                  <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
-                </div>
-              ) : (
-                <div className="italic text-[11px] animate-pulse text-[#433e39]">{statusMessage}</div>
-              )}
+    <div className="h-full flex flex-col glow-card rounded-2xl backdrop-blur-xl overflow-hidden" data-testid="chat-container">
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-agent-accent/20 bg-agent-darker/50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              <div className="absolute inset-0 h-2 w-2 rounded-full bg-green-500 animate-ping" />
+            </div>
+            <div>
+              <h2 className="text-agent-light font-medium text-sm">Professional AI Agent</h2>
+              <p className="text-agent-light/50 text-xs">Resume-trained • Real-time responses</p>
             </div>
           </div>
+          <div className="text-xs text-agent-light/30">
+            {messages.length} interactions
+          </div>
+        </div>
+      </div>
+
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto px-6 py-4 scroll-smooth custom-scrollbar">
+        {messages.length === 0 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="h-full flex items-center justify-center"
+          >
+            <div className="text-center space-y-4 max-w-md">
+              <div className="text-5xl">🤖</div>
+              <h3 className="text-agent-light text-lg font-medium">Start a Conversation</h3>
+              <p className="text-agent-light/60 text-sm">
+                Ask me anything about Sam's professional experience, skills, or projects.
+                I'm powered by AI and trained on the complete resume.
+              </p>
+            </div>
+          </motion.div>
         )}
+        
+        {messages.map((msg, idx) => renderMessage(msg, idx))}
+        
+        {/* Typing Indicator */}
+        {isGenerating && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-start mb-4"
+          >
+            <div className="max-w-[85%]">
+              <div className="bg-agent-gray border border-agent-accent/20 px-5 py-3 rounded-2xl backdrop-blur-xl">
+                {currentText ? (
+                  <div className="prose prose-sm max-w-none prose-invert prose-headings:text-agent-light prose-p:text-agent-light">
+                    <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
+                      {sanitizeHtml(currentText)}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1">
+                      <div className="h-2 w-2 rounded-full bg-agent-accent animate-pulse" style={{animationDelay: '0ms'}} />
+                      <div className="h-2 w-2 rounded-full bg-agent-accent animate-pulse" style={{animationDelay: '150ms'}} />
+                      <div className="h-2 w-2 rounded-full bg-agent-accent animate-pulse" style={{animationDelay: '300ms'}} />
+                    </div>
+                    <span className="text-agent-light/60 text-xs italic">{statusMessage}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+        
         <div ref={messagesEndRef} />
       </div>
-      {showSuggestions && (
-        <div className="px-2 sm:px-4 space-y-2 backdrop-blur-sm mt-2 max-w-[100vw] lg:max-w-none">
-          <div className="flex items-center justify-center">
-            <button 
-              onClick={toggleSuggestions}
-              className="transform transition-all duration-700 ease-in hover:scale-110"
-            >
-              <div 
-                className={`transition-transform duration-700 ease-out ${
-                  isSuggestionsExpanded ? 'rotate-0' : 'rotate-180'
-                }`}
-              >
-                <ArrowDownward style={{ color: '#433e39' }} />
-              </div>
-            </button>
-          </div>
-          {isSuggestionsExpanded && (
-            <div className="grid grid-cols-1 gap-2">
-              {suggestedPrompts
-                .filter(suggestion => !suggestion.used)
-                .map((suggestion, index) => (
-                  <button
-                    key={index}
-                    className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base bg-[#a29a92] bg-opacity-50 hover:bg-opacity-90"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion.title}
-                  </button>
-                ))}
+
+      {/* Suggestions */}
+      <AnimatePresence>
+        {showSuggestions && messages.length === 0 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="px-6 pb-4"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {suggestedPrompts.filter(s => !s.used).slice(0, 3).map((suggestion, index) => (
+                <motion.button
+                  key={index}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 py-3 rounded-xl bg-agent-gray/50 border border-agent-accent/20 hover:border-agent-accent/40 hover:bg-agent-gray transition-all text-left group"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  data-testid={`suggestion-${index}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{suggestion.icon}</span>
+                    <span className="text-agent-light/80 group-hover:text-agent-light text-xs font-medium">
+                      {suggestion.title}
+                    </span>
+                  </div>
+                </motion.button>
+              ))}
             </div>
-          )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Input Area */}
+      <div className="px-6 py-4 border-t border-agent-accent/20 bg-agent-darker/50">
+        <div className="flex items-center gap-3 bg-agent-gray/50 rounded-xl border border-agent-accent/20 focus-within:border-agent-accent/40 transition-all px-4 py-3">
+          <input
+            className="flex-1 bg-transparent border-none focus:outline-none text-agent-light placeholder-agent-light/40 text-sm"
+            type="text"
+            placeholder="Ask about experience, skills, projects..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && !isGenerating && sendMessage()}
+            disabled={isGenerating}
+            data-testid="chat-input"
+          />
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
+              isGenerating
+                ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                : 'bg-gradient-to-r from-agent-accent to-agent-glow text-white hover:shadow-lg hover:shadow-agent-accent/20'
+            }`}
+            onClick={isGenerating ? stopTyping : sendMessage}
+            disabled={!input.trim() && !isGenerating}
+            data-testid="send-button"
+          >
+            {isGenerating ? '⏸ Stop' : '→ Send'}
+          </motion.button>
         </div>
-      )}
-      <div className="flex backdrop-blur-sm bg-white/5 rounded-lg border border-[#8C8278]/20 mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none">
-        <input
-          className="flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base text-[#433e39] placeholder-custom"
-          type="text"
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && !isGenerating && sendMessage()}
-          disabled={isGenerating}
-        />
-        <button
-          className={`px-4 sm:px-8 text-sm sm:text-base font-medium ${
-            isGenerating
-              ? 'text-red-600 hover:text-red-700'
-              : 'text-[#433e39] hover:text-[#686460]'
-          } transition-colors`}
-          onClick={isGenerating ? stopTyping : sendMessage}
-        >
-          {isGenerating ? 'Stop' : 'Send'}
-        </button>
       </div>
     </div>
   );
