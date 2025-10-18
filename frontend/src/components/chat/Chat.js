@@ -432,21 +432,29 @@ function Chat({ darkMode = false }) {
       <div 
         className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-300"
         style={{
-          background: 'rgba(255, 255, 255, 0.08)',
-          borderColor: 'rgba(140, 130, 120, 0.25)',
-          boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
+          background: darkMode ? 'rgba(60, 56, 52, 0.4)' : 'rgba(255, 255, 255, 0.08)',
+          borderColor: darkMode ? 'rgba(100, 95, 90, 0.3)' : 'rgba(140, 130, 120, 0.25)',
+          boxShadow: darkMode 
+            ? '0 2px 8px rgba(0, 0, 0, 0.2)'
+            : '0 2px 8px rgba(140, 130, 120, 0.08)'
         }}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.4)';
-          e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15), 0 0 0 3px rgba(140, 130, 120, 0.08)';
+          e.currentTarget.style.borderColor = darkMode ? 'rgba(140, 130, 120, 0.5)' : 'rgba(140, 130, 120, 0.4)';
+          e.currentTarget.style.boxShadow = darkMode 
+            ? '0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(140, 130, 120, 0.15)'
+            : '0 4px 16px rgba(140, 130, 120, 0.15), 0 0 0 3px rgba(140, 130, 120, 0.08)';
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.25)';
-          e.currentTarget.style.boxShadow = '0 2px 8px rgba(140, 130, 120, 0.08)';
+          e.currentTarget.style.borderColor = darkMode ? 'rgba(100, 95, 90, 0.3)' : 'rgba(140, 130, 120, 0.25)';
+          e.currentTarget.style.boxShadow = darkMode 
+            ? '0 2px 8px rgba(0, 0, 0, 0.2)'
+            : '0 2px 8px rgba(140, 130, 120, 0.08)';
         }}
       >
         <input
-          className="flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base text-[#433e39] placeholder-custom"
+          className={`flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base placeholder-custom transition-colors duration-300 ${
+            darkMode ? 'text-[#e7e5e2]' : 'text-[#433e39]'
+          }`}
           type="text"
           placeholder="Type your message..."
           value={input}
@@ -457,8 +465,8 @@ function Chat({ darkMode = false }) {
         <button
           className={`px-6 sm:px-8 py-3 sm:py-0 text-base sm:text-sm font-medium transition-all duration-200 ${
             isGenerating
-              ? 'text-red-600 hover:text-red-700'
-              : 'text-[#433e39] hover:text-[#686460]'
+              ? (darkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-700')
+              : (darkMode ? 'text-[#c7c5c2] hover:text-[#e7e5e2]' : 'text-[#433e39] hover:text-[#686460]')
           }`}
           onClick={isGenerating ? stopTyping : sendMessage}
           style={{
