@@ -46,6 +46,7 @@ function Chat() {
   const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
   const [statusMessage, setStatusMessage] = useState(null);
   const statusTimeouts = useRef([]);
+  const [thinkingProgress, setThinkingProgress] = useState(0);
 
   const handleSuggestionClick = (selectedPrompt) => {
     setInput(selectedPrompt.prompt);
