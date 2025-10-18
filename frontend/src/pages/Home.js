@@ -152,7 +152,6 @@ function Home() {
             </motion.div>
           </div>
         </motion.div>
-      )}
       
       <FooterText />
     </div>
