@@ -1,34 +1,75 @@
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+.placeholder-custom::placeholder {
+  color: #8c8278;
+  font-weight: 500;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.3);
-  border-radius: 3px;
+.collapsed {
+  max-height: 40px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.5);
+.expanded {
+  max-height: 300px;
+  overflow: auto;
+  transition: max-height 0.3s ease;
 }
 
-/* Smooth scrolling */
-.scroll-smooth {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
+.suggestions {
+  transition: max-height 0.3s ease;
 }
 
-/* Markdown content styling */
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  padding: 0;
+}
+
+button:focus {
+  outline: none;
+}
+
+.markdown-content * {
+  color: #433e39 !important;
+}
+
+.markdown-content {
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .markdown-content {
+    font-size: 1rem;
+  }
+}
+
 .markdown-content ul,
 .markdown-content ol {
-  margin-left: 1.25em;
+  color: #433e39;
+  margin-left: 1em;
   padding-right: 1em;
 }
 
+@media (min-width: 640px) {
+  .markdown-content ul,
+  .markdown-content ol {
+    margin-left: 1.5em;
+  }
+}
+
+.markdown-content ul li::marker,
+.markdown-content ol li::marker {
+  color: #433e39;
+}
+
 .markdown-content li {
+  color: #433e39;
   margin: 0.25em 0;
 }
 
@@ -37,40 +78,29 @@
   display: inline;
 }
 
-.markdown-content code {
-  background: rgba(59, 130, 246, 0.1);
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-size: 0.875em;
-  font-family: 'Courier New', monospace;
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-.markdown-content pre {
-  background: rgba(10, 10, 11, 0.5);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.markdown-content pre code {
+.scroll-smooth::-webkit-scrollbar {
+  width: 0px;
   background: transparent;
-  padding: 0;
 }
 
-/* Animation for message appearance */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Glow effect on hover */
-.group:hover .glow-on-hover {
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+.fade-edges {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
 }
