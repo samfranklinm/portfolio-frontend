@@ -14,11 +14,11 @@ function Home() {
       try {
         // Show intro text
         await controls.start('showTexts');
-        await new Promise(resolve => setTimeout(resolve, 2500));
+        await new Promise(resolve => setTimeout(resolve, 1500));
         // Fade out intro
         await controls.start('hideTexts');
-        // Wait a bit before showing interface
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // Small delay
+        await new Promise(resolve => setTimeout(resolve, 200));
         // Show main interface
         setShowInterface(true);
         await controls.start('showInterface');
@@ -28,7 +28,13 @@ function Home() {
         setShowInterface(true);
       }
     };
-    sequence();
+    
+    // Start sequence with a small delay to ensure everything is mounted
+    const timer = setTimeout(() => {
+      sequence();
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [controls]);
 
   const textVariants = {
