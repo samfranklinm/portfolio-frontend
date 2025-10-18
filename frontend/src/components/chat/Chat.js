@@ -66,13 +66,14 @@ function Chat() {
       
       const start = scrollContainer.scrollTop;
       const end = scrollHeight - scrollContainer.clientHeight;
-      const duration = 500;
+      const duration = 600;
       const startTime = performance.now();
       
       const scroll = (currentTime) => {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
+        // Smooth ease-out cubic
         const easeOut = 1 - Math.pow(1 - progress, 3);
         
         scrollContainer.scrollTop = start + (end - start) * easeOut;
