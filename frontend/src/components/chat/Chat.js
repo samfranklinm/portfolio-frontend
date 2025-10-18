@@ -219,9 +219,27 @@ function Chat() {
         transition={{ duration: 0.2, ease: "easeOut" }}
         className={`markdown-content ${
           msg.sender === 'user'
-            ? 'max-w-xl bg-[#8C8278]/25 hover:bg-[#7b7774]/30 text-[#433e39]'
-            : 'w-80vw max-w-[90%] bg-white/5 hover:bg-[#7b7774]/30 text-[#433e39]'
-        } px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-100`}
+            ? 'max-w-xl text-[#433e39]'
+            : 'w-80vw max-w-[90%] text-[#433e39]'
+        } px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-200`}
+        style={{
+          background: msg.sender === 'user' 
+            ? 'rgba(140, 130, 120, 0.25)'
+            : 'rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 2px 12px rgba(140, 130, 120, 0.1)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = msg.sender === 'user'
+            ? 'rgba(140, 130, 120, 0.35)'
+            : 'rgba(255, 255, 255, 0.12)';
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = msg.sender === 'user'
+            ? 'rgba(140, 130, 120, 0.25)'
+            : 'rgba(255, 255, 255, 0.08)';
+          e.currentTarget.style.boxShadow = '0 2px 12px rgba(140, 130, 120, 0.1)';
+        }}
       >
         <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
           <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
