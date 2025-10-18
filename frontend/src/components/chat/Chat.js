@@ -66,13 +66,14 @@ function Chat() {
       
       const start = scrollContainer.scrollTop;
       const end = scrollHeight - scrollContainer.clientHeight;
-      const duration = 500;
+      const duration = 600;
       const startTime = performance.now();
       
       const scroll = (currentTime) => {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
+        // Smooth ease-out cubic
         const easeOut = 1 - Math.pow(1 - progress, 3);
         
         scrollContainer.scrollTop = start + (end - start) * easeOut;
@@ -333,12 +334,25 @@ function Chat() {
             </button>
           </div>
           {isSuggestionsExpanded && (
-            <div className="grid grid-cols-1 gap-2">
+            <motion.div 
+              className="grid grid-cols-1 gap-2"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            >
               {suggestedPrompts
                 .filter(suggestion => !suggestion.used)
                 .map((suggestion, index) => (
-                  <button
+                  <motion.button
                     key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ 
+                      duration: 0.3, 
+                      delay: index * 0.08,
+                      ease: [0.25, 0.1, 0.25, 1]
+                    }}
                     className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base transition-all duration-200"
                     style={{
                       background: 'rgba(162, 154, 146, 0.5)',
@@ -348,27 +362,38 @@ function Chat() {
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'rgba(162, 154, 146, 0.7)';
                       e.currentTarget.style.boxShadow = '0 4px 12px rgba(67, 62, 57, 0.15)';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = 'rgba(162, 154, 146, 0.5)';
                       e.currentTarget.style.boxShadow = '0 2px 8px rgba(67, 62, 57, 0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
                     }}
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
                     {suggestion.title}
-                  </button>
+                  </motion.button>
                 ))}
-            </div>
+            </motion.div>
           )}
         </div>
       )}
-      <div className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-200" style={{
-        background: 'rgba(255, 255, 255, 0.08)',
-        borderColor: 'rgba(140, 130, 120, 0.25)',
-        boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
-      }}>
+      <div 
+        className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-300"
+        style={{
+          background: 'rgba(255, 255, 255, 0.08)',
+          borderColor: 'rgba(140, 130, 120, 0.25)',
+          boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.4)';
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15), 0 0 0 3px rgba(140, 130, 120, 0.08)';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.25)';
+          e.currentTarget.style.boxShadow = '0 2px 8px rgba(140, 130, 120, 0.08)';
+        }}
+      >
         <input
           className="flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base text-[#433e39] placeholder-custom"
           type="text"
@@ -379,12 +404,32 @@ function Chat() {
           disabled={isGenerating}
         />
         <button
-          className={`px-4 sm:px-8 text-sm sm:text-base font-medium ${
+          className={`px-4 sm:px-8 text-sm sm:text-base font-medium transition-all duration-200 ${
             isGenerating
               ? 'text-red-600 hover:text-red-700'
               : 'text-[#433e39] hover:text-[#686460]'
-          } transition-colors`}
+          }`}
           onClick={isGenerating ? stopTyping : sendMessage}
+          style={{
+            transform: 'scale(1)',
+            opacity: (!input.trim() && !isGenerating) ? 0.4 : 1
+          }}
+          onMouseEnter={(e) => {
+            if (input.trim() || isGenerating) {
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+          onMouseDown={(e) => {
+            if (input.trim() || isGenerating) {
+              e.currentTarget.style.transform = 'scale(0.95)';
+            }
+          }}
+          onMouseUp={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }}
         >
           {isGenerating ? 'Stop' : 'Send'}
         </button>
