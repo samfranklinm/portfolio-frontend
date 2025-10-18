@@ -1,5 +1,5 @@
 // src/pages/Home.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import Chat from '../components/chat/Chat';
 import { LogoLink } from '../components/logo/LogoLink';
@@ -7,6 +7,14 @@ import {FooterText} from '../components/footer/FooterText';
 
 function Home() {
   const controls = useAnimation();
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+  }, [darkMode]);
 
   useEffect(() => {
     const sequence = async () => {
