@@ -388,23 +388,19 @@ function Chat() {
                     }}
                     className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base transition-all duration-200"
                     style={{
-                      background: 'rgba(162, 154, 146, 0.4)',
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
+                      background: 'rgba(162, 154, 146, 0.5)',
                       boxShadow: '0 2px 8px rgba(67, 62, 57, 0.1)',
-                      border: '1px solid rgba(255, 255, 255, 0.15)'
+                      border: '1px solid rgba(67, 62, 57, 0.1)'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.6)';
+                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.7)';
                       e.currentTarget.style.boxShadow = '0 6px 16px rgba(67, 62, 57, 0.2)';
                       e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.4)';
+                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.5)';
                       e.currentTarget.style.boxShadow = '0 2px 8px rgba(67, 62, 57, 0.1)';
                       e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
                     }}
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
