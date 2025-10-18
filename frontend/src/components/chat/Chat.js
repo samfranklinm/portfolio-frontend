@@ -301,7 +301,11 @@ function Chat() {
           )}
         </div>
       )}
-      <div className="flex backdrop-blur-sm bg-white/5 rounded-lg border border-[#8C8278]/20 mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none">
+      <div className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-200" style={{
+        background: 'rgba(255, 255, 255, 0.08)',
+        borderColor: 'rgba(140, 130, 120, 0.25)',
+        boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
+      }}>
         <input
           className="flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base text-[#433e39] placeholder-custom"
           type="text"
