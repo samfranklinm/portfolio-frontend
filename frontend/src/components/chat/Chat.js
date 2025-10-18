@@ -146,7 +146,10 @@ function Chat() {
           }
         }
       );
+      
       clearInterval(messageInterval);
+      clearInterval(progressInterval);
+      setThinkingProgress(100);
       setStatusMessage(null);
       
       if (response.data.sessionId) {
