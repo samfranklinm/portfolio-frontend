@@ -386,11 +386,12 @@ function Chat() {
                       delay: index * 0.08,
                       ease: [0.25, 0.1, 0.25, 1]
                     }}
-                    className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base transition-all duration-200"
+                    className="px-4 py-3 sm:px-4 sm:py-2 rounded-lg w-full text-left text-base sm:text-sm transition-all duration-200"
                     style={{
                       background: 'rgba(162, 154, 146, 0.5)',
                       boxShadow: '0 2px 8px rgba(67, 62, 57, 0.1)',
-                      border: '1px solid rgba(67, 62, 57, 0.1)'
+                      border: '1px solid rgba(67, 62, 57, 0.1)',
+                      minHeight: '44px' // Better mobile touch target
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'rgba(162, 154, 146, 0.7)';
@@ -401,6 +402,12 @@ function Chat() {
                       e.currentTarget.style.background = 'rgba(162, 154, 146, 0.5)';
                       e.currentTarget.style.boxShadow = '0 2px 8px rgba(67, 62, 57, 0.1)';
                       e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    }}
+                    onTouchStart={(e) => {
+                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.7)';
+                    }}
+                    onTouchEnd={(e) => {
+                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.5)';
                     }}
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
