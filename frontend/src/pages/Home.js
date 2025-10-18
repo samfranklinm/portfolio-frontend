@@ -7,34 +7,11 @@ import {FooterText} from '../components/footer/FooterText';
 
 function Home() {
   const controls = useAnimation();
-  const [showInterface, setShowInterface] = useState(false);
+  const [showInterface, setShowInterface] = useState(true); // Changed to true immediately
 
   useEffect(() => {
-    const sequence = async () => {
-      try {
-        // Show intro text
-        await controls.start('showTexts');
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        // Fade out intro
-        await controls.start('hideTexts');
-        // Small delay
-        await new Promise(resolve => setTimeout(resolve, 200));
-        // Show main interface
-        setShowInterface(true);
-        await controls.start('showInterface');
-      } catch (error) {
-        console.error('Animation sequence error:', error);
-        // Fallback: show interface immediately
-        setShowInterface(true);
-      }
-    };
-    
-    // Start sequence with a small delay to ensure everything is mounted
-    const timer = setTimeout(() => {
-      sequence();
-    }, 100);
-    
-    return () => clearTimeout(timer);
+    // Skip animation, show interface immediately
+    controls.start('showInterface');
   }, [controls]);
 
   const textVariants = {
