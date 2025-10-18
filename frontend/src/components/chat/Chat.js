@@ -444,7 +444,7 @@ function Chat() {
           disabled={isGenerating}
         />
         <button
-          className={`px-4 sm:px-8 text-sm sm:text-base font-medium transition-all duration-200 ${
+          className={`px-6 sm:px-8 py-3 sm:py-0 text-base sm:text-sm font-medium transition-all duration-200 ${
             isGenerating
               ? 'text-red-600 hover:text-red-700'
               : 'text-[#433e39] hover:text-[#686460]'
@@ -452,7 +452,9 @@ function Chat() {
           onClick={isGenerating ? stopTyping : sendMessage}
           style={{
             transform: 'scale(1)',
-            opacity: (!input.trim() && !isGenerating) ? 0.4 : 1
+            opacity: (!input.trim() && !isGenerating) ? 0.4 : 1,
+            minHeight: '44px', // Better mobile touch target
+            minWidth: '60px'
           }}
           onMouseEnter={(e) => {
             if (input.trim() || isGenerating) {
