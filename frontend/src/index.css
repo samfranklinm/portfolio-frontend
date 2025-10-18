@@ -3,33 +3,102 @@
 @tailwind utilities;
 
 ::-moz-selection {
-    background: #8C8278;
-    color: #fafafa;
+    background: #3b82f6;
+    color: #e7e5e4;
     text-shadow: none;
 }
 
 ::selection {
-    background: #8C8278;
-    color: #fafafa;
+    background: #3b82f6;
+    color: #e7e5e4;
     text-shadow: none;
 }
 
 ::-webkit-scrollbar {
-    width: 0px;
+    width: 8px;
     background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.5);
 }
 
 html {
     overflow: scroll;
     overflow-x: hidden;
     font-size: 15px;
+    background: #18181b;
 }
 
 body {
     transition: all 0.5s ease;
+    background: #18181b;
+    color: #e7e5e4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 }
 
 p {
     margin-block-start: 0.5em;
     margin-block-end: 0.5em;
+}
+
+/* Neural network background pattern */
+.neural-bg {
+    background-image: 
+        linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: neural 20s linear infinite;
+}
+
+/* Glow effect for cards */
+.glow-card {
+    position: relative;
+    background: rgba(39, 39, 42, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    transition: all 0.3s ease;
+}
+
+.glow-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(96, 165, 250, 0.1));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.glow-card:hover::before {
+    opacity: 1;
+}
+
+.glow-card:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+/* Pulse animation for AI thinking */
+@keyframes ai-pulse {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(0.95);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.ai-thinking {
+    animation: ai-pulse 2s ease-in-out infinite;
 }
