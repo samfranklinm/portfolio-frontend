@@ -268,7 +268,7 @@ function Chat() {
             className="flex justify-start mb-4"
           >
             <div className="max-w-[85%]">
-              <div className="bg-agent-gray border border-agent-accent/20 px-5 py-3 rounded-2xl backdrop-blur-xl">
+              <div className="bg-agent-gray/80 border border-agent-accent/30 px-5 py-3 rounded-2xl backdrop-blur-xl">
                 {currentText ? (
                   <div className="prose prose-sm max-w-none prose-invert prose-headings:text-agent-light prose-p:text-agent-light">
                     <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
