@@ -334,12 +334,25 @@ function Chat() {
             </button>
           </div>
           {isSuggestionsExpanded && (
-            <div className="grid grid-cols-1 gap-2">
+            <motion.div 
+              className="grid grid-cols-1 gap-2"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            >
               {suggestedPrompts
                 .filter(suggestion => !suggestion.used)
                 .map((suggestion, index) => (
-                  <button
+                  <motion.button
                     key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ 
+                      duration: 0.3, 
+                      delay: index * 0.08,
+                      ease: [0.25, 0.1, 0.25, 1]
+                    }}
                     className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base transition-all duration-200"
                     style={{
                       background: 'rgba(162, 154, 146, 0.5)',
@@ -349,19 +362,19 @@ function Chat() {
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'rgba(162, 154, 146, 0.7)';
                       e.currentTarget.style.boxShadow = '0 4px 12px rgba(67, 62, 57, 0.15)';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = 'rgba(162, 154, 146, 0.5)';
                       e.currentTarget.style.boxShadow = '0 2px 8px rgba(67, 62, 57, 0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
                     }}
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
                     {suggestion.title}
-                  </button>
+                  </motion.button>
                 ))}
-            </div>
+            </motion.div>
           )}
         </div>
       )}
