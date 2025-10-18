@@ -54,51 +54,16 @@ function Home() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
-      {/* Animated grid overlay */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)',
-          animation: 'pulse 4s ease-in-out infinite'
-        }} />
-      </div>
-
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden bg-agent-dark">
       <LogoLink />
       
-      {/* Intro Animation */}
-      {!showInterface && (
-        <div className="absolute top-[30%] text-agent-light w-full max-w-4xl text-center px-4 z-10">
-          <motion.div
-            variants={textVariants}
-            initial="hidden"
-            animate={controls}
-            className="space-y-6"
-          >
-            <h1 className="text-4xl sm:text-6xl font-light mb-4 tracking-tight">
-              <span className="bg-gradient-to-r from-agent-light via-agent-glow to-agent-light bg-clip-text text-transparent">
-                Initializing Agent
-              </span>
-            </h1>
-            <div className="flex items-center justify-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-agent-accent animate-pulse" style={{animationDelay: '0ms'}} />
-              <div className="h-2 w-2 rounded-full bg-agent-accent animate-pulse" style={{animationDelay: '200ms'}} />
-              <div className="h-2 w-2 rounded-full bg-agent-accent animate-pulse" style={{animationDelay: '400ms'}} />
-            </div>
-            <p className="text-lg text-agent-light/60 font-light">
-              Processing professional profile data...
-            </p>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Main Interface */}
-      {showInterface && (
-        <motion.div
-          variants={interfaceVariants}
-          initial="hidden"
-          animate={controls}
-          className="w-full max-w-7xl h-[85vh] flex flex-col lg:flex-row gap-4 px-2 sm:px-4 relative z-10"
-        >
+      {/* Main Interface - Always visible now */}
+      <motion.div
+        variants={interfaceVariants}
+        initial="hidden"
+        animate={controls}
+        className="w-full max-w-7xl h-[85vh] flex flex-col lg:flex-row gap-4 px-2 sm:px-4 relative z-10"
+      >
           {/* Chat Interface */}
           <div className="flex-1 lg:w-2/3">
             <Chat />
