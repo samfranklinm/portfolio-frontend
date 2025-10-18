@@ -31,35 +31,46 @@ function Home() {
       opacity: 1,
       y: 50,
       transition: { 
-        duration: 1.2,
-        ease: "easeOut"
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1]
       }
     },
     hideTexts: {
       opacity: 0,
       y: -100,
+      scale: 0.98,
       transition: { 
-        duration: 0.6,
-        ease: "easeIn",
-        delay: 0.5
+        duration: 0.5,
+        ease: [0.43, 0.13, 0.23, 0.96],
+        delay: 0.3
       }
     }
   };
 
   const chatVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
+    hidden: { opacity: 0, scale: 0.96, y: 10 },
     showChat: {
       opacity: 1,
       scale: 1,
+      y: 0,
       transition: { 
-        duration: 0.8,
-        ease: "easeOut" 
+        duration: 0.7,
+        ease: [0.25, 0.1, 0.25, 1]
       }
     }
   };
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-[#dbd8d5] to-[#8C8278]">
+      {/* Subtle grid pattern overlay */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
+        backgroundImage: `
+          linear-gradient(rgba(67, 62, 57, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(67, 62, 57, 0.03) 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px'
+      }} />
+      
       <LogoLink />
       <div className="absolute top-[20%] text-[#35312d] w-full max-w-3xl text-center px-4">
         <motion.h1
@@ -93,7 +104,10 @@ function Home() {
         variants={chatVariants}
         initial="hidden"
         animate={controls}
-        className="w-full text-[#35312d] lg:max-w-4xl h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4"
+        className="w-full text-[#35312d] lg:max-w-4xl h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4 relative"
+        style={{
+          filter: 'drop-shadow(0 20px 40px rgba(67, 62, 57, 0.15))'
+        }}
       >
         <Chat />
       </motion.div>

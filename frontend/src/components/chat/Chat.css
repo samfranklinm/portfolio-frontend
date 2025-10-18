@@ -8,13 +8,13 @@
 }
 
 .collapsed {
-  max-height: 40px; /* Height when collapsed */
+  max-height: 40px;
   overflow: hidden;
   transition: max-height 0.3s ease;
 }
 
 .expanded {
-  max-height: 300px; /* Adjust as needed for expanded state */
+  max-height: 300px;
   overflow: auto;
   transition: max-height 0.3s ease;
 }
@@ -24,11 +24,10 @@
 }
 
 button {
-  /* Ensure the cursor changes to pointer on hover */
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 1.2rem; /* Adjust size as needed */
+  font-size: 1.2rem;
   padding: 0;
 }
 
@@ -50,7 +49,6 @@ button:focus {
   }
 }
 
-/* Markdown list styling */
 .markdown-content ul,
 .markdown-content ol {
   color: #433e39;
@@ -80,19 +78,16 @@ button:focus {
   display: inline;
 }
 
-/* Smooth scrolling container */
 .scroll-smooth {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
-/* Hide scrollbar but keep functionality */
 .scroll-smooth::-webkit-scrollbar {
   width: 0px;
   background: transparent;
 }
 
-/* Fade effect for messages */
 .fade-edges {
   -webkit-mask-image: linear-gradient(
     to bottom,

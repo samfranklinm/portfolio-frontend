@@ -44,8 +44,8 @@ function Chat() {
   const typingInterval = useRef(null);
   const messagesEndRef = useRef(null);
   const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
-  const [statusMessage, setStatusMessage] = useState(null); // New state variable
-  const statusTimeouts = useRef([]); // To track timeouts
+  const [statusMessage, setStatusMessage] = useState(null);
+  const statusTimeouts = useRef([]);
 
   const handleSuggestionClick = (selectedPrompt) => {
     setInput(selectedPrompt.prompt);
@@ -64,17 +64,15 @@ function Chat() {
       const scrollContainer = messagesEndRef.current.parentElement;
       const scrollHeight = scrollContainer.scrollHeight;
       
-      // Smooth scroll animation
       const start = scrollContainer.scrollTop;
       const end = scrollHeight - scrollContainer.clientHeight;
-      const duration = 500; // ms
+      const duration = 500;
       const startTime = performance.now();
       
       const scroll = (currentTime) => {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
-        // Ease out cubic function
         const easeOut = 1 - Math.pow(1 - progress, 3);
         
         scrollContainer.scrollTop = start + (end - start) * easeOut;
@@ -100,26 +98,16 @@ function Chat() {
       { sender: 'bot', text: currentText },
     ]);
     setCurrentText('');
-    // Clear status messages
     statusTimeouts.current.forEach(clearTimeout);
     statusTimeouts.current = [];
-    etStatusMessage(null);
+    setStatusMessage(null);
   };
 
   const statusMessages = [
-    "Looking up my resume...",
-    "Getting you the best response...",
-    "Almost there...",
+    "Analyzing resume context...",
+    "Processing your question...",
+    "Generating response...",
   ];
-
-  const cycleStatusMessages = () => {
-    let messageIndex = 0;
-    const interval = setInterval(() => {
-      setStatusMessage(statusMessages[messageIndex]);
-      messageIndex = (messageIndex + 1) % statusMessages.length;
-    }, 3000);
-    return interval;
-  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -130,10 +118,8 @@ function Chat() {
     setShowSuggestions(false);
     setSuggestedPrompts((prev) => prev.filter((prompt) => prompt !== input));
 
-    // Set initial status message immediately
     setStatusMessage(statusMessages[0]);
     
-    // Start cycling status messages from the second message
     let messageIndex = 1;
     const messageInterval = setInterval(() => {
       setStatusMessage(statusMessages[messageIndex]);
@@ -149,7 +135,6 @@ function Chat() {
           }
         }
       );
-      // Clear the cycling interval
       clearInterval(messageInterval);
       setStatusMessage(null);
       
@@ -158,16 +143,15 @@ function Chat() {
       }
       const botMessage = response.data.answer;
       let index = 0;
-      const charsPerIteration = 5; // Add multiple characters per iteration
+      const charsPerIteration = 5;
 
-      // Clear status messages before starting to display the bot's response
       statusTimeouts.current.forEach(clearTimeout);
       statusTimeouts.current = [];
       setStatusMessage(null);
 
       typingInterval.current = setInterval(() => {
         setCurrentText(botMessage.slice(0, index));
-        index += charsPerIteration; // Increment by multiple characters
+        index += charsPerIteration;
         if (index > botMessage.length) {
           clearInterval(typingInterval.current);
           setIsGenerating(false);
@@ -179,7 +163,7 @@ function Chat() {
           setShowSuggestions(true);
           setIsSuggestionsExpanded(false);
         }
-      }, 0.5); // Reduced from 3ms to 1ms
+      }, 20); // Smoother, more natural typing speed
     } catch (error) {
       clearInterval(messageInterval);
       setStatusMessage(null);
@@ -221,23 +205,48 @@ function Chat() {
   const renderMessage = (msg, idx) => (
     <motion.div
       key={idx}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 15, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ 
+        duration: 0.4, 
+        ease: [0.25, 0.1, 0.25, 1],
+        delay: idx * 0.05
+      }}
       className={`flex ${
         msg.sender === 'user' ? 'justify-end' : 'justify-start'
       } py-2`}
     >
       <motion.div
         layout
-        initial={{ scale: 0.95, opacity: 0 }}
+        initial={{ scale: 0.96, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        transition={{ 
+          duration: 0.3, 
+          ease: [0.25, 0.1, 0.25, 1]
+        }}
         className={`markdown-content ${
           msg.sender === 'user'
-            ? 'max-w-xl bg-[#8C8278]/25 hover:bg-[#7b7774]/30 text-[#433e39]'
-            : 'w-80vw max-w-[90%] bg-white/5 hover:bg-[#7b7774]/30 text-[#433e39]'
-        } px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-100`}
+            ? 'max-w-xl text-[#433e39]'
+            : 'w-80vw max-w-[90%] text-[#433e39]'
+        } px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-200`}
+        style={{
+          background: msg.sender === 'user' 
+            ? 'rgba(140, 130, 120, 0.25)'
+            : 'rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 2px 12px rgba(140, 130, 120, 0.1)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = msg.sender === 'user'
+            ? 'rgba(140, 130, 120, 0.35)'
+            : 'rgba(255, 255, 255, 0.12)';
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = msg.sender === 'user'
+            ? 'rgba(140, 130, 120, 0.25)'
+            : 'rgba(255, 255, 255, 0.08)';
+          e.currentTarget.style.boxShadow = '0 2px 12px rgba(140, 130, 120, 0.1)';
+        }}
       >
         <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
           <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
@@ -254,21 +263,56 @@ function Chat() {
   );
 
   return (
-    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex flex-col overflow-hidden text-[#433e39]">
+    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex flex-col overflow-hidden text-[#433e39] rounded-xl shadow-lg" style={{
+      boxShadow: '0 8px 32px rgba(140, 130, 120, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+    }}>
       <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4 text-[#433e39] max-w-[100vw] lg:max-w-none fade-edges">
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
-          <div className="flex justify-start py-2">
-            <div className="w-fit max-w-[80%] px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="flex justify-start py-2"
+          >
+            <div className="w-fit max-w-[80%] px-4 py-2 rounded-lg backdrop-blur-sm" style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 2px 8px rgba(140, 130, 120, 0.1)'
+            }}>
               {currentText ? (
                 <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
                   <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
                 </div>
               ) : (
-                <div className="italic text-[11px] animate-pulse text-[#433e39]">{statusMessage}</div>
+                <motion.div 
+                  className="flex items-center gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="flex gap-1">
+                    <motion.div 
+                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <motion.div 
+                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                    />
+                    <motion.div 
+                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+                    />
+                  </div>
+                  <span className="italic text-[11px] text-[#433e39]/70">{statusMessage}</span>
+                </motion.div>
               )}
             </div>
-          </div>
+          </motion.div>
         )}
         <div ref={messagesEndRef} />
       </div>
@@ -295,7 +339,22 @@ function Chat() {
                 .map((suggestion, index) => (
                   <button
                     key={index}
-                    className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base bg-[#a29a92] bg-opacity-50 hover:bg-opacity-90"
+                    className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base transition-all duration-200"
+                    style={{
+                      background: 'rgba(162, 154, 146, 0.5)',
+                      boxShadow: '0 2px 8px rgba(67, 62, 57, 0.1)',
+                      border: '1px solid rgba(67, 62, 57, 0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.7)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(67, 62, 57, 0.15)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.5)';
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(67, 62, 57, 0.1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
                     {suggestion.title}
@@ -305,7 +364,11 @@ function Chat() {
           )}
         </div>
       )}
-      <div className="flex backdrop-blur-sm bg-white/5 rounded-lg border border-[#8C8278]/20 mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none">
+      <div className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-200" style={{
+        background: 'rgba(255, 255, 255, 0.08)',
+        borderColor: 'rgba(140, 130, 120, 0.25)',
+        boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
+      }}>
         <input
           className="flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base text-[#433e39] placeholder-custom"
           type="text"
