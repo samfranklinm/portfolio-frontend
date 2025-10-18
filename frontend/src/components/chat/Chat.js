@@ -205,18 +205,25 @@ function Chat() {
   const renderMessage = (msg, idx) => (
     <motion.div
       key={idx}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 15, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ 
+        duration: 0.4, 
+        ease: [0.25, 0.1, 0.25, 1],
+        delay: idx * 0.05
+      }}
       className={`flex ${
         msg.sender === 'user' ? 'justify-end' : 'justify-start'
       } py-2`}
     >
       <motion.div
         layout
-        initial={{ scale: 0.95, opacity: 0 }}
+        initial={{ scale: 0.96, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        transition={{ 
+          duration: 0.3, 
+          ease: [0.25, 0.1, 0.25, 1]
+        }}
         className={`markdown-content ${
           msg.sender === 'user'
             ? 'max-w-xl text-[#433e39]'
