@@ -192,9 +192,9 @@ function Chat() {
         <div className={`${
           msg.sender === 'user'
             ? 'bg-gradient-to-br from-agent-accent to-agent-glow text-white'
-            : 'bg-agent-gray border border-agent-accent/20 text-agent-light'
+            : 'bg-agent-gray/80 border border-agent-accent/30 text-agent-light'
         } px-5 py-3 rounded-2xl backdrop-blur-xl transition-all duration-200 group-hover:shadow-lg ${
-          msg.sender === 'bot' ? 'group-hover:border-agent-accent/40' : ''
+          msg.sender === 'bot' ? 'group-hover:border-agent-accent/50' : ''
         }`}>
           <div className="prose prose-sm max-w-none prose-invert prose-headings:text-inherit prose-p:text-inherit prose-strong:text-inherit prose-a:text-agent-glow">
             <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
