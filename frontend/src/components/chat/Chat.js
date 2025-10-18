@@ -104,9 +104,9 @@ function Chat() {
   };
 
   const statusMessages = [
-    "Looking up my resume...",
-    "Getting you the best response...",
-    "Almost there...",
+    "Analyzing resume context...",
+    "Processing your question...",
+    "Generating response...",
   ];
 
   const sendMessage = async () => {
