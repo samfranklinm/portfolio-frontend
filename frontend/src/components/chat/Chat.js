@@ -310,22 +310,25 @@ function Chat() {
             { icon: '📁', label: 'Career Goals', prompt: 'Where do you see your career heading and what excites you most about that path?' },
             { icon: '📁', label: 'Contact Info', prompt: "What's the best way to reach you for professional opportunities?" }
           ].map((item, idx) => (
-            <button
+            <div
               key={idx}
-              type="button"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 setInput(item.prompt);
                 setShowSuggestions(false);
+                return false;
               }}
-              onMouseDown={(e) => e.preventDefault()}
-              className="w-full text-left px-2 py-1.5 text-sm hover:bg-[#2a2d2e] transition-colors rounded flex items-center gap-2"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                return false;
+              }}
+              className="w-full text-left px-2 py-1.5 text-sm hover:bg-[#2a2d2e] transition-colors rounded flex items-center gap-2 cursor-pointer"
               style={{ color: '#cccccc' }}
             >
               <span>{item.icon}</span>
               <span>{item.label}</span>
-            </button>
+            </div>
           ))}
         </div>
       </div>
