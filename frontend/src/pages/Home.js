@@ -7,20 +7,37 @@ import {FooterText} from '../components/footer/FooterText';
 
 function Home() {
   const controls = useAnimation();
+  const logoControls = useAnimation();
 
   useEffect(() => {
     const sequence = async () => {
+      // Animate logo in
+      logoControls.start({
+        opacity: 1,
+        scale: 1,
+        transition: { duration: 0.8, ease: "easeOut" }
+      });
+      
       // Show texts in sequence
       await controls.start('showTexts');
       // Hold position
       await new Promise(resolve => setTimeout(resolve, 2000));
       // Hide texts
       await controls.start('hideTexts');
+      
+      // Slide logo to top left
+      await logoControls.start({
+        x: 0,
+        y: 0,
+        scale: 0.7,
+        transition: { duration: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }
+      });
+      
       // Show chat
       await controls.start('showChat');
     };
     sequence();
-  }, [controls]);
+  }, [controls, logoControls]);
 
   const textVariants = {
     hidden: { 
