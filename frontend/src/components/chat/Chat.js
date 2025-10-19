@@ -243,7 +243,7 @@ function Chat() {
       } py-2`}
     >
       {msg.sender === 'bot' && (
-        <div className="flex flex-col items-end mr-3 pt-1" style={{ minWidth: '40px' }}>
+        <div className="hidden sm:flex flex-col items-end mr-3 pt-1" style={{ minWidth: '40px' }}>
           <div className="text-xs leading-6" style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}>
             {idx + 1}
           </div>
@@ -260,8 +260,8 @@ function Chat() {
         className={`markdown-content ${
           msg.sender === 'user'
             ? 'max-w-xl'
-            : 'w-80vw max-w-[90%]'
-        } px-4 py-2 rounded transition-all duration-200`}
+            : 'w-full sm:w-80vw max-w-[90%]'
+        } px-3 sm:px-4 py-2 rounded transition-all duration-200`}
         style={{
           background: msg.sender === 'user' 
             ? '#0e639c'
@@ -269,7 +269,7 @@ function Chat() {
           color: '#ffffff',
           border: msg.sender === 'bot' ? '1px solid #3e3e42' : 'none',
           fontFamily: "'Fira Code', monospace",
-          fontSize: '13px',
+          fontSize: '12px',
           lineHeight: '1.6'
         }}
         onMouseEnter={(e) => {
@@ -307,15 +307,15 @@ function Chat() {
   );
 
   return (
-    <div className="w-full lg:w-[120vw] lg:max-w-[1400px] h-[80vh] sm:h-[85vh] flex rounded-xl overflow-hidden" style={{
+    <div className="w-full max-w-[100vw] lg:w-[120vw] lg:max-w-[1400px] h-[85vh] sm:h-[85vh] flex rounded-xl overflow-hidden" style={{
       backgroundColor: '#1e1e1e',
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
       fontFamily: "'Fira Code', monospace",
       position: 'relative',
       zIndex: 50
     }}>
-      {/* Sidebar - File Explorer */}
-      <div className={`${sidebarCollapsed ? 'w-0' : 'w-48'} transition-all duration-300 overflow-hidden`} style={{
+      {/* Sidebar - File Explorer - Hidden on mobile */}
+      <div className={`${sidebarCollapsed ? 'w-0' : 'w-48'} transition-all duration-300 overflow-hidden hidden md:block`} style={{
         backgroundColor: '#252526',
         borderRight: '1px solid #3e3e42'
       }}>
@@ -355,21 +355,22 @@ function Chat() {
 
       {/* Main Editor Area */}
       <div className="flex-1 flex flex-col">
-        {/* Tab Bar */}
+        {/* Tab Bar - Simplified on mobile */}
         <div style={{ backgroundColor: '#2d2d2d', borderBottom: '1px solid #3e3e42' }} className="flex items-center px-2">
-          <div className="flex items-center gap-1 py-1.5 px-3 text-sm" style={{
+          <div className="flex items-center gap-1 py-1.5 px-2 sm:px-3 text-xs sm:text-sm" style={{
             backgroundColor: '#1e1e1e',
             borderRight: '1px solid #3e3e42',
             color: '#cccccc'
           }}>
-            <span className="mr-2">💬</span>
-            <span>about_my_professional_life.chat</span>
-            <button className="ml-2 hover:bg-[#3e3e42] rounded px-1">×</button>
+            <span className="mr-1 sm:mr-2">💬</span>
+            <span className="hidden sm:inline">about_my_professional_life.chat</span>
+            <span className="sm:hidden">chat</span>
+            <button className="ml-1 sm:ml-2 hover:bg-[#3e3e42] rounded px-1 text-xs">×</button>
           </div>
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto scroll-smooth px-4 pb-4" style={{ backgroundColor: '#1e1e1e' }}>
+        <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4" style={{ backgroundColor: '#1e1e1e' }}>
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
           <motion.div 
@@ -491,19 +492,21 @@ function Chat() {
         </div>
       </div>
 
-      {/* Status Bar */}
-      <div style={{ backgroundColor: '#007acc', color: '#ffffff' }} className="flex items-center justify-between px-3 py-1 text-xs">
-        <div className="flex items-center gap-4">
-          <span>Ln {messages.length + 1}, Col {input.length}</span>
-          <span>UTF-8</span>
+      {/* Status Bar - Simplified on mobile */}
+      <div style={{ backgroundColor: '#007acc', color: '#ffffff' }} className="flex items-center justify-between px-2 sm:px-3 py-1 text-[10px] sm:text-xs">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <span className="hidden sm:inline">Ln {messages.length + 1}, Col {input.length}</span>
+          <span className="sm:hidden">Ln {messages.length + 1}</span>
+          <span className="hidden md:inline">UTF-8</span>
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-green-400"></span>
-            AI Agent Active
+            <span className="hidden sm:inline">AI Agent Active</span>
+            <span className="sm:hidden">Active</span>
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <span>{messages.length} messages</span>
-          <span>about_my_professional_life.chat</span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span>{messages.length} msg</span>
+          <span className="hidden md:inline">about_my_professional_life.chat</span>
         </div>
       </div>
     </div>

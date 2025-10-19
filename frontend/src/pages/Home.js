@@ -85,7 +85,7 @@ function Home() {
       <motion.div
         initial={{ opacity: 0, scale: 1.2, x: 0, y: 0 }}
         animate={logoControls}
-        className="fixed top-8 left-8 z-20"
+        className="fixed top-4 sm:top-8 left-4 sm:left-8 z-20"
       >
         <LogoLink />
       </motion.div>
@@ -94,7 +94,7 @@ function Home() {
           variants={textVariants}
           initial="hidden"
           animate={controls}
-          className="text-3xl sm:text-5xl font-light mb-4 tracking-tight"
+          className="text-2xl sm:text-3xl md:text-5xl font-light mb-4 tracking-tight"
           style={{ fontFamily: "'Fira Code', monospace" }}
         >
           You made it!
@@ -104,7 +104,7 @@ function Home() {
           initial="hidden"
           animate={controls}
           transition={{ delay: 0.5 }}
-          className="text-xl font-light"
+          className="text-lg sm:text-xl font-light"
           style={{ color: '#cccccc', fontFamily: "'Fira Code', monospace" }}
         >
           I'm Sam. Nice to e-meet you.
@@ -114,7 +114,7 @@ function Home() {
           initial="hidden"
           animate={controls}
           transition={{ delay: 1 }}
-          className="text-md font-light"
+          className="text-sm sm:text-md font-light"
           style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}
         >
           I'm sure you're eager to get to know me... Let's chat!
@@ -124,7 +124,7 @@ function Home() {
         variants={chatVariants}
         initial="hidden"
         animate={controls}
-        className="w-full lg:max-w-[1400px] h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4 relative"
+        className="w-full max-w-[95vw] sm:max-w-[90vw] lg:max-w-[1400px] h-[85vh] sm:h-[85vh] flex items-center justify-center px-1 sm:px-2 md:px-4 relative"
       >
         <Chat />
       </motion.div>
