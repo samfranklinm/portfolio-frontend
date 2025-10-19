@@ -314,8 +314,8 @@ function Chat() {
       position: 'relative',
       zIndex: 50
     }}>
-      {/* Sidebar - File Explorer */}
-      <div className={`${sidebarCollapsed ? 'w-0' : 'w-48'} transition-all duration-300 overflow-hidden`} style={{
+      {/* Sidebar - File Explorer - Hidden on mobile */}
+      <div className={`${sidebarCollapsed ? 'w-0' : 'w-48'} transition-all duration-300 overflow-hidden hidden md:block`} style={{
         backgroundColor: '#252526',
         borderRight: '1px solid #3e3e42'
       }}>
