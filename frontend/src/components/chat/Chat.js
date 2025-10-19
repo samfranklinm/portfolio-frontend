@@ -94,6 +94,14 @@ function Chat() {
     scrollToBottom();
   }, [messages, currentText, isGenerating]);
 
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
+    }
+  }, [input]);
+
   const stopTyping = () => {
     clearInterval(typingInterval.current);
     setIsGenerating(false);
