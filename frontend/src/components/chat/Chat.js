@@ -454,23 +454,19 @@ function Chat() {
         <div className="flex items-start gap-2">
           <span className="text-xs mt-2" style={{ color: '#858585' }}>{'>'}</span>
           <textarea
+            ref={textareaRef}
             className="flex-1 bg-transparent border-none focus:outline-none text-sm resize-none"
             style={{ 
               color: '#ffffff', 
               fontFamily: "'Fira Code', monospace",
               maxHeight: '120px',
-              minHeight: '24px',
+              minHeight: '28px',
               overflow: 'auto'
             }}
             rows={1}
             placeholder="Ask about Sam's professional life..."
             value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              // Auto-resize textarea
-              e.target.style.height = 'auto';
-              e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
-            }}
+            onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => {
               if (e.key === 'Enter' && !e.shiftKey && !isGenerating) {
                 e.preventDefault();
