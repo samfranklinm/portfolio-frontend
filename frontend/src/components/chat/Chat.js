@@ -294,7 +294,9 @@ function Chat() {
     <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex rounded-xl overflow-hidden" style={{
       backgroundColor: '#1e1e1e',
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-      fontFamily: "'Fira Code', monospace"
+      fontFamily: "'Fira Code', monospace",
+      position: 'relative',
+      zIndex: 50
     }}>
       {/* Sidebar - File Explorer */}
       <div className={`${sidebarCollapsed ? 'w-0' : 'w-48'} transition-all duration-300 overflow-hidden`} style={{
