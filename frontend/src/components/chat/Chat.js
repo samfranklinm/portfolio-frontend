@@ -276,7 +276,16 @@ function Chat() {
             : '#2d2d2d';
         }}
       >
-        <div className="prose prose-sm max-w-none prose-headings:text-white prose-p:text-white prose-strong:text-white prose-em:text-white prose-ul:text-white prose-ol:text-white prose-li:text-white prose-a:text-white prose-code:text-white" style={{ color: '#ffffff' }}>
+        <div className="prose prose-sm max-w-none" style={{ color: '#ffffff !important' }}>
+          <style>{`
+            .markdown-content * {
+              color: #ffffff !important;
+            }
+            .markdown-content a {
+              color: #60a5fa !important;
+              text-decoration: underline;
+            }
+          `}</style>
           <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
             {sanitizeHtml(msg.text)}
           </ReactMarkdown>
