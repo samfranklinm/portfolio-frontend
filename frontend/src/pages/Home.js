@@ -85,7 +85,7 @@ function Home() {
       <motion.div
         initial={{ opacity: 0, scale: 1.2, x: 0, y: 0 }}
         animate={logoControls}
-        className="fixed top-8 left-8 z-20"
+        className="fixed top-4 sm:top-8 left-4 sm:left-8 z-20"
       >
         <LogoLink />
       </motion.div>
@@ -94,7 +94,7 @@ function Home() {
           variants={textVariants}
           initial="hidden"
           animate={controls}
-          className="text-3xl sm:text-5xl font-light mb-4 tracking-tight"
+          className="text-2xl sm:text-3xl md:text-5xl font-light mb-4 tracking-tight"
           style={{ fontFamily: "'Fira Code', monospace" }}
         >
           You made it!
