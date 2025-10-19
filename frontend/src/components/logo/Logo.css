@@ -22,9 +22,7 @@
 .svg {
     width: 120px;
     height: 120px;
-    position: fixed;
-    top: 25px;
-    left: -530px;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,9 +39,7 @@
     .svg {
         width: 70px;
         height: 90px;
-        top: 0vh;
-        left: -38vw;  /* Use viewport width instead of fixed pixels */
-        position: absolute; /* Change to absolute positioning for mobile */
-        z-index: 1000;
+        position: relative;
+        z-index: 10;
     }
 }
