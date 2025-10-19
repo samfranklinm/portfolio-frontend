@@ -492,19 +492,21 @@ function Chat() {
         </div>
       </div>
 
-      {/* Status Bar */}
-      <div style={{ backgroundColor: '#007acc', color: '#ffffff' }} className="flex items-center justify-between px-3 py-1 text-xs">
-        <div className="flex items-center gap-4">
-          <span>Ln {messages.length + 1}, Col {input.length}</span>
-          <span>UTF-8</span>
+      {/* Status Bar - Simplified on mobile */}
+      <div style={{ backgroundColor: '#007acc', color: '#ffffff' }} className="flex items-center justify-between px-2 sm:px-3 py-1 text-[10px] sm:text-xs">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <span className="hidden sm:inline">Ln {messages.length + 1}, Col {input.length}</span>
+          <span className="sm:hidden">Ln {messages.length + 1}</span>
+          <span className="hidden md:inline">UTF-8</span>
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-green-400"></span>
-            AI Agent Active
+            <span className="hidden sm:inline">AI Agent Active</span>
+            <span className="sm:hidden">Active</span>
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <span>{messages.length} messages</span>
-          <span>about_my_professional_life.chat</span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span>{messages.length} msg</span>
+          <span className="hidden md:inline">about_my_professional_life.chat</span>
         </div>
       </div>
     </div>
