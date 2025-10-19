@@ -44,6 +44,7 @@ function Chat() {
   ]);
   const typingInterval = useRef(null);
   const messagesEndRef = useRef(null);
+  const textareaRef = useRef(null);
   const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
   const [statusMessage, setStatusMessage] = useState(null);
   const statusTimeouts = useRef([]);
@@ -91,7 +92,15 @@ function Chat() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, currentText]);
+  }, [messages, currentText, isGenerating]);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
+    }
+  }, [input]);
 
   const stopTyping = () => {
     clearInterval(typingInterval.current);
@@ -235,11 +244,9 @@ function Chat() {
     >
       {msg.sender === 'bot' && (
         <div className="flex flex-col items-end mr-3 pt-1" style={{ minWidth: '40px' }}>
-          {msg.text.split('\n').map((_, lineIdx) => (
-            <div key={lineIdx} className="text-xs leading-6" style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}>
-              {idx * 10 + lineIdx + 1}
-            </div>
-          ))}
+          <div className="text-xs leading-6" style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}>
+            {idx + 1}
+          </div>
         </div>
       )}
       <motion.div
@@ -377,7 +384,16 @@ function Chat() {
               border: '1px solid #3e3e42'
             }}>
               {currentText ? (
-                <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
+                <div className="prose prose-sm max-w-none" style={{ color: '#ffffff' }}>
+                  <style>{`
+                    .markdown-content * {
+                      color: #ffffff !important;
+                    }
+                    .markdown-content a {
+                      color: #60a5fa !important;
+                      text-decoration: underline;
+                    }
+                  `}</style>
                   <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
                 </div>
               ) : (
@@ -435,16 +451,28 @@ function Chat() {
 
       {/* Input Area */}
       <div style={{ backgroundColor: '#2d2d2d', borderTop: '1px solid #3e3e42' }} className="p-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs" style={{ color: '#858585' }}>{'>'}</span>
-          <input
-            className="flex-1 bg-transparent border-none focus:outline-none text-sm"
-            style={{ color: '#cccccc', fontFamily: "'Fira Code', monospace" }}
-            type="text"
+        <div className="flex items-start gap-2">
+          <span className="text-xs mt-2" style={{ color: '#858585' }}>{'>'}</span>
+          <textarea
+            ref={textareaRef}
+            className="flex-1 bg-transparent border-none focus:outline-none text-sm resize-none"
+            style={{ 
+              color: '#ffffff', 
+              fontFamily: "'Fira Code', monospace",
+              maxHeight: '120px',
+              minHeight: '28px',
+              overflow: 'auto'
+            }}
+            rows={1}
             placeholder="Ask about Sam's professional life..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && !isGenerating && sendMessage()}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey && !isGenerating) {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
             disabled={isGenerating}
           />
           <button
