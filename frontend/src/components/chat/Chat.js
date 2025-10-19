@@ -355,16 +355,17 @@ function Chat() {
 
       {/* Main Editor Area */}
       <div className="flex-1 flex flex-col">
-        {/* Tab Bar */}
+        {/* Tab Bar - Simplified on mobile */}
         <div style={{ backgroundColor: '#2d2d2d', borderBottom: '1px solid #3e3e42' }} className="flex items-center px-2">
-          <div className="flex items-center gap-1 py-1.5 px-3 text-sm" style={{
+          <div className="flex items-center gap-1 py-1.5 px-2 sm:px-3 text-xs sm:text-sm" style={{
             backgroundColor: '#1e1e1e',
             borderRight: '1px solid #3e3e42',
             color: '#cccccc'
           }}>
-            <span className="mr-2">💬</span>
-            <span>about_my_professional_life.chat</span>
-            <button className="ml-2 hover:bg-[#3e3e42] rounded px-1">×</button>
+            <span className="mr-1 sm:mr-2">💬</span>
+            <span className="hidden sm:inline">about_my_professional_life.chat</span>
+            <span className="sm:hidden">chat</span>
+            <button className="ml-1 sm:ml-2 hover:bg-[#3e3e42] rounded px-1 text-xs">×</button>
           </div>
         </div>
 
