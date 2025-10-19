@@ -408,7 +408,54 @@ function Chat() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      {showSuggestions && (
+
+      {/* Input Area */}
+      <div style={{ backgroundColor: '#2d2d2d', borderTop: '1px solid #3e3e42' }} className="p-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs" style={{ color: '#858585' }}>{'>'}</span>
+          <input
+            className="flex-1 bg-transparent border-none focus:outline-none text-sm"
+            style={{ color: '#cccccc', fontFamily: "'Fira Code', monospace" }}
+            type="text"
+            placeholder="Ask about Sam's professional life..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && !isGenerating && sendMessage()}
+            disabled={isGenerating}
+          />
+          <button
+            onClick={isGenerating ? stopTyping : sendMessage}
+            disabled={!input.trim() && !isGenerating}
+            className="px-4 py-1.5 rounded text-xs font-medium transition-all"
+            style={{
+              backgroundColor: isGenerating ? '#c72e2e' : (input.trim() ? '#0e639c' : '#2d2d2d'),
+              color: isGenerating ? '#ffffff' : (input.trim() ? '#ffffff' : '#858585'),
+              border: '1px solid #3e3e42',
+              minHeight: '28px'
+            }}
+          >
+            {isGenerating ? 'Stop' : 'Send'}
+          </button>
+        </div>
+      </div>
+
+      {/* Status Bar */}
+      <div style={{ backgroundColor: '#007acc', color: '#ffffff' }} className="flex items-center justify-between px-3 py-1 text-xs">
+        <div className="flex items-center gap-4">
+          <span>Ln {messages.length + 1}, Col {input.length}</span>
+          <span>UTF-8</span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-green-400"></span>
+            AI Agent Active
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span>{messages.length} messages</span>
+          <span>about_my_professional_life.chat</span>
+        </div>
+      </div>
+    </div>
+  </div>
         <div className="px-2 sm:px-4 space-y-2 backdrop-blur-sm mt-2 max-w-[100vw] lg:max-w-none">
           <div className="flex items-center justify-center">
             <button 
