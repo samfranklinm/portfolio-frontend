@@ -14,6 +14,7 @@ function Chat() {
   const [currentText, setCurrentText] = useState('');
   const [sessionId, setSessionId] = useState(null);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState([
     {
       title: "Professional Journey",
@@ -46,6 +47,7 @@ function Chat() {
   const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
   const [statusMessage, setStatusMessage] = useState(null);
   const statusTimeouts = useRef([]);
+  const [thinkingProgress, setThinkingProgress] = useState(0);
 
   const handleSuggestionClick = (selectedPrompt) => {
     setInput(selectedPrompt.prompt);
@@ -118,8 +120,17 @@ function Chat() {
     setIsGenerating(true);
     setShowSuggestions(false);
     setSuggestedPrompts((prev) => prev.filter((prompt) => prompt !== input));
+    setThinkingProgress(0);
 
     setStatusMessage(statusMessages[0]);
+    
+    // Simulate thinking progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress > 90) progress = 90;
+      setThinkingProgress(progress);
+    }, 300);
     
     let messageIndex = 1;
     const messageInterval = setInterval(() => {
@@ -136,7 +147,10 @@ function Chat() {
           }
         }
       );
+      
       clearInterval(messageInterval);
+      clearInterval(progressInterval);
+      setThinkingProgress(100);
       setStatusMessage(null);
       
       if (response.data.sessionId) {
@@ -167,6 +181,8 @@ function Chat() {
       }, 20); // Smoother, more natural typing speed
     } catch (error) {
       clearInterval(messageInterval);
+      clearInterval(progressInterval);
+      setThinkingProgress(0);
       setStatusMessage(null);
       const errorMessage = error.response?.data?.error || 'An unexpected error occurred. Please try again later.';
       setMessages((prev) => [
@@ -217,6 +233,15 @@ function Chat() {
         msg.sender === 'user' ? 'justify-end' : 'justify-start'
       } py-2`}
     >
+      {msg.sender === 'bot' && (
+        <div className="flex flex-col items-end mr-3 pt-1" style={{ minWidth: '40px' }}>
+          {msg.text.split('\n').map((_, lineIdx) => (
+            <div key={lineIdx} className="text-xs leading-6" style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}>
+              {idx * 10 + lineIdx + 1}
+            </div>
+          ))}
+        </div>
+      )}
       <motion.div
         layout
         initial={{ scale: 0.96, opacity: 0 }}
@@ -227,34 +252,45 @@ function Chat() {
         }}
         className={`markdown-content ${
           msg.sender === 'user'
-            ? 'max-w-xl text-[#433e39]'
-            : 'w-80vw max-w-[90%] text-[#433e39]'
-        } px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-200`}
+            ? 'max-w-xl'
+            : 'w-80vw max-w-[90%]'
+        } px-4 py-2 rounded transition-all duration-200`}
         style={{
           background: msg.sender === 'user' 
-            ? 'rgba(140, 130, 120, 0.25)'
-            : 'rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 2px 12px rgba(140, 130, 120, 0.1)',
+            ? '#0e639c'
+            : '#2d2d2d',
+          color: '#ffffff',
+          border: msg.sender === 'bot' ? '1px solid #3e3e42' : 'none',
+          fontFamily: "'Fira Code', monospace",
+          fontSize: '13px',
+          lineHeight: '1.6'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = msg.sender === 'user'
-            ? 'rgba(140, 130, 120, 0.35)'
-            : 'rgba(255, 255, 255, 0.12)';
-          e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15)';
+            ? '#1177bb'
+            : '#333333';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = msg.sender === 'user'
-            ? 'rgba(140, 130, 120, 0.25)'
-            : 'rgba(255, 255, 255, 0.08)';
-          e.currentTarget.style.boxShadow = '0 2px 12px rgba(140, 130, 120, 0.1)';
+            ? '#0e639c'
+            : '#2d2d2d';
         }}
       >
-        <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
+        <div className="prose prose-sm max-w-none" style={{ color: '#ffffff !important' }}>
+          <style>{`
+            .markdown-content * {
+              color: #ffffff !important;
+            }
+            .markdown-content a {
+              color: #60a5fa !important;
+              text-decoration: underline;
+            }
+          `}</style>
           <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
             {sanitizeHtml(msg.text)}
           </ReactMarkdown>
           {msg.sender === 'bot' && (
-            <div className="mt-2 text-xs italic text-[#433e39]/60">
+            <div className="mt-2 text-xs italic" style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
               This is an AI-generated response, therefore, accuracy is not guaranteed. Please contact me for clarification, if needed.
             </div>
           )}
@@ -264,10 +300,69 @@ function Chat() {
   );
 
   return (
-    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex flex-col overflow-hidden text-[#433e39] rounded-xl shadow-lg" style={{
-      boxShadow: '0 8px 32px rgba(140, 130, 120, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex rounded-xl overflow-hidden" style={{
+      backgroundColor: '#1e1e1e',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+      fontFamily: "'Fira Code', monospace",
+      position: 'relative',
+      zIndex: 50
     }}>
-      <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4 text-[#433e39] max-w-[100vw] lg:max-w-none fade-edges">
+      {/* Sidebar - File Explorer */}
+      <div className={`${sidebarCollapsed ? 'w-0' : 'w-48'} transition-all duration-300 overflow-hidden`} style={{
+        backgroundColor: '#252526',
+        borderRight: '1px solid #3e3e42'
+      }}>
+        <div className="p-2">
+          <div className="text-xs text-gray-400 uppercase mb-2 px-2">Explorer</div>
+          {[
+            { icon: '📁', label: 'Professional Journey', prompt: 'Walk me through your career journey, highlighting key achievements at each role.' },
+            { icon: '📁', label: 'Technical Skills', prompt: 'What are your core technical skills and how have you applied them in real projects?' },
+            { icon: '📁', label: 'Impactful Project', prompt: 'Describe your most impactful project and the specific challenges you overcame.' },
+            { icon: '📁', label: 'Career Goals', prompt: 'Where do you see your career heading and what excites you most about that path?' },
+            { icon: '📁', label: 'Contact Info', prompt: "What's the best way to reach you for professional opportunities?" }
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              onClick={(e) => {
+                console.log('Clicked:', item.label);
+                e.preventDefault();
+                e.stopPropagation();
+                setInput(item.prompt);
+                setShowSuggestions(false);
+                return false;
+              }}
+              onMouseDown={(e) => {
+                console.log('MouseDown:', item.label);
+                e.preventDefault();
+                return false;
+              }}
+              className="w-full text-left px-2 py-1.5 text-sm hover:bg-[#2a2d2e] transition-colors rounded flex items-center gap-2 cursor-pointer"
+              style={{ color: '#cccccc' }}
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Editor Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Tab Bar */}
+        <div style={{ backgroundColor: '#2d2d2d', borderBottom: '1px solid #3e3e42' }} className="flex items-center px-2">
+          <div className="flex items-center gap-1 py-1.5 px-3 text-sm" style={{
+            backgroundColor: '#1e1e1e',
+            borderRight: '1px solid #3e3e42',
+            color: '#cccccc'
+          }}>
+            <span className="mr-2">💬</span>
+            <span>about_my_professional_life.chat</span>
+            <button className="ml-2 hover:bg-[#3e3e42] rounded px-1">×</button>
+          </div>
+        </div>
+
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto scroll-smooth px-4 pb-4" style={{ backgroundColor: '#1e1e1e' }}>
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
           <motion.div 
@@ -277,164 +372,114 @@ function Chat() {
             transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             className="flex justify-start py-2"
           >
-            <div className="w-fit max-w-[80%] px-4 py-2 rounded-lg backdrop-blur-sm" style={{
-              background: 'rgba(255, 255, 255, 0.15)',
-              boxShadow: '0 2px 8px rgba(140, 130, 120, 0.1)'
+            <div className="w-fit max-w-[80%] px-4 py-2 rounded" style={{
+              background: '#2d2d2d',
+              border: '1px solid #3e3e42'
             }}>
               {currentText ? (
                 <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
                   <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
                 </div>
               ) : (
-                <motion.div 
-                  className="flex items-center gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <div className="flex gap-1">
-                    <motion.div 
-                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
-                    />
-                    <motion.div 
-                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                    />
-                    <motion.div 
-                      className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-                    />
+                <div>
+                  <motion.div 
+                    className="flex items-center gap-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <div className="flex gap-1">
+                      <motion.div 
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: '#007acc' }}
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                      <motion.div 
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: '#007acc' }}
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                      />
+                      <motion.div 
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: '#007acc' }}
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+                      />
+                    </div>
+                    <span className="italic text-[11px]" style={{ color: '#858585' }}>{statusMessage}</span>
+                  </motion.div>
+                  {/* Progress Bar */}
+                  <div className="mt-2 w-full">
+                    <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: '#3e3e42' }}>
+                      <motion.div 
+                        className="h-full rounded-full"
+                        style={{ backgroundColor: '#007acc' }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${thinkingProgress}%` }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                      />
+                    </div>
+                    <div className="text-[10px] mt-1 text-right" style={{ color: '#858585' }}>
+                      {Math.round(thinkingProgress)}%
+                    </div>
                   </div>
-                  <span className="italic text-[11px] text-[#433e39]/70">{statusMessage}</span>
-                </motion.div>
+                </div>
               )}
             </div>
           </motion.div>
         )}
         <div ref={messagesEndRef} />
       </div>
-      {showSuggestions && (
-        <div className="px-2 sm:px-4 space-y-2 backdrop-blur-sm mt-2 max-w-[100vw] lg:max-w-none">
-          <div className="flex items-center justify-center">
-            <button 
-              onClick={toggleSuggestions}
-              className="transform transition-all duration-700 ease-in hover:scale-110"
-            >
-              <div 
-                className={`transition-transform duration-700 ease-out ${
-                  isSuggestionsExpanded ? 'rotate-0' : 'rotate-180'
-                }`}
-              >
-                <ArrowDownward style={{ color: '#433e39' }} />
-              </div>
-            </button>
-          </div>
-          {isSuggestionsExpanded && (
-            <motion.div 
-              className="grid grid-cols-1 gap-2"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              {suggestedPrompts
-                .filter(suggestion => !suggestion.used)
-                .map((suggestion, index) => (
-                  <motion.button
-                    key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ 
-                      duration: 0.3, 
-                      delay: index * 0.08,
-                      ease: [0.25, 0.1, 0.25, 1]
-                    }}
-                    className="px-3 py-2 sm:px-4 rounded-lg w-full text-left text-sm sm:text-base transition-all duration-200"
-                    style={{
-                      background: 'rgba(162, 154, 146, 0.5)',
-                      boxShadow: '0 2px 8px rgba(67, 62, 57, 0.1)',
-                      border: '1px solid rgba(67, 62, 57, 0.1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.7)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(67, 62, 57, 0.15)';
-                      e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(162, 154, 146, 0.5)';
-                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(67, 62, 57, 0.1)';
-                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                    }}
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion.title}
-                  </motion.button>
-                ))}
-            </motion.div>
-          )}
+
+      {/* Input Area */}
+      <div style={{ backgroundColor: '#2d2d2d', borderTop: '1px solid #3e3e42' }} className="p-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs" style={{ color: '#858585' }}>{'>'}</span>
+          <input
+            className="flex-1 bg-transparent border-none focus:outline-none text-sm"
+            style={{ color: '#cccccc', fontFamily: "'Fira Code', monospace" }}
+            type="text"
+            placeholder="Ask about Sam's professional life..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && !isGenerating && sendMessage()}
+            disabled={isGenerating}
+          />
+          <button
+            onClick={isGenerating ? stopTyping : sendMessage}
+            disabled={!input.trim() && !isGenerating}
+            className="px-4 py-1.5 rounded text-xs font-medium transition-all"
+            style={{
+              backgroundColor: isGenerating ? '#c72e2e' : (input.trim() ? '#0e639c' : '#2d2d2d'),
+              color: isGenerating ? '#ffffff' : (input.trim() ? '#ffffff' : '#858585'),
+              border: '1px solid #3e3e42',
+              minHeight: '28px'
+            }}
+          >
+            {isGenerating ? 'Stop' : 'Send'}
+          </button>
         </div>
-      )}
-      <div 
-        className="flex backdrop-blur-sm rounded-lg border mt-4 mx-2 sm:mx-0 max-w-[100vw] lg:max-w-none transition-all duration-300"
-        style={{
-          background: 'rgba(255, 255, 255, 0.08)',
-          borderColor: 'rgba(140, 130, 120, 0.25)',
-          boxShadow: '0 2px 8px rgba(140, 130, 120, 0.08)'
-        }}
-        onFocus={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.4)';
-          e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15), 0 0 0 3px rgba(140, 130, 120, 0.08)';
-        }}
-        onBlur={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(140, 130, 120, 0.25)';
-          e.currentTarget.style.boxShadow = '0 2px 8px rgba(140, 130, 120, 0.08)';
-        }}
-      >
-        <input
-          className="flex-1 p-3 sm:p-4 bg-transparent border-none focus:outline-none text-sm sm:text-base text-[#433e39] placeholder-custom"
-          type="text"
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && !isGenerating && sendMessage()}
-          disabled={isGenerating}
-        />
-        <button
-          className={`px-4 sm:px-8 text-sm sm:text-base font-medium transition-all duration-200 ${
-            isGenerating
-              ? 'text-red-600 hover:text-red-700'
-              : 'text-[#433e39] hover:text-[#686460]'
-          }`}
-          onClick={isGenerating ? stopTyping : sendMessage}
-          style={{
-            transform: 'scale(1)',
-            opacity: (!input.trim() && !isGenerating) ? 0.4 : 1
-          }}
-          onMouseEnter={(e) => {
-            if (input.trim() || isGenerating) {
-              e.currentTarget.style.transform = 'scale(1.05)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-          onMouseDown={(e) => {
-            if (input.trim() || isGenerating) {
-              e.currentTarget.style.transform = 'scale(0.95)';
-            }
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.transform = 'scale(1.05)';
-          }}
-        >
-          {isGenerating ? 'Stop' : 'Send'}
-        </button>
+      </div>
+
+      {/* Status Bar */}
+      <div style={{ backgroundColor: '#007acc', color: '#ffffff' }} className="flex items-center justify-between px-3 py-1 text-xs">
+        <div className="flex items-center gap-4">
+          <span>Ln {messages.length + 1}, Col {input.length}</span>
+          <span>UTF-8</span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-green-400"></span>
+            AI Agent Active
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span>{messages.length} messages</span>
+          <span>about_my_professional_life.chat</span>
+        </div>
       </div>
     </div>
+  </div>
   );
 }
 
