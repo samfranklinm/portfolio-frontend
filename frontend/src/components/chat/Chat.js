@@ -377,7 +377,16 @@ function Chat() {
               border: '1px solid #3e3e42'
             }}>
               {currentText ? (
-                <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
+                <div className="prose prose-sm max-w-none" style={{ color: '#ffffff' }}>
+                  <style>{`
+                    .markdown-content * {
+                      color: #ffffff !important;
+                    }
+                    .markdown-content a {
+                      color: #60a5fa !important;
+                      text-decoration: underline;
+                    }
+                  `}</style>
                   <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
                 </div>
               ) : (
