@@ -370,7 +370,7 @@ function Chat() {
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto scroll-smooth px-4 pb-4" style={{ backgroundColor: '#1e1e1e' }}>
+        <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4" style={{ backgroundColor: '#1e1e1e' }}>
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
           <motion.div 
