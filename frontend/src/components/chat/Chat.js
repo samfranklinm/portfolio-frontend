@@ -307,7 +307,7 @@ function Chat() {
   );
 
   return (
-    <div className="w-full lg:w-[120vw] lg:max-w-[1400px] h-[80vh] sm:h-[85vh] flex rounded-xl overflow-hidden" style={{
+    <div className="w-full max-w-[100vw] lg:w-[120vw] lg:max-w-[1400px] h-[85vh] sm:h-[85vh] flex rounded-xl overflow-hidden" style={{
       backgroundColor: '#1e1e1e',
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
       fontFamily: "'Fira Code', monospace",
