@@ -14,6 +14,7 @@ function Chat() {
   const [currentText, setCurrentText] = useState('');
   const [sessionId, setSessionId] = useState(null);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState([
     {
       title: "Professional Journey",
