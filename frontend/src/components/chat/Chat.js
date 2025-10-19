@@ -370,22 +370,25 @@ function Chat() {
                   >
                     <div className="flex gap-1">
                       <motion.div 
-                        className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: '#007acc' }}
                         animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
                       />
                       <motion.div 
-                        className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: '#007acc' }}
                         animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
                       />
                       <motion.div 
-                        className="h-1.5 w-1.5 rounded-full bg-[#8C8278]"
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: '#007acc' }}
                         animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
                       />
                     </div>
-                    <span className="italic text-[11px] text-[#433e39]/70">{statusMessage}</span>
+                    <span className="italic text-[11px]" style={{ color: '#858585' }}>{statusMessage}</span>
                   </motion.div>
                   {/* Progress Bar */}
                   <div className="mt-2 w-full">
