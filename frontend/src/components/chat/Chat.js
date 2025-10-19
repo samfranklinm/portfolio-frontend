@@ -312,14 +312,16 @@ function Chat() {
           ].map((item, idx) => (
             <button
               key={idx}
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 setInput(item.prompt);
                 setShowSuggestions(false);
               }}
+              onMouseDown={(e) => e.preventDefault()}
               className="w-full text-left px-2 py-1.5 text-sm hover:bg-[#2a2d2e] transition-colors rounded flex items-center gap-2"
               style={{ color: '#cccccc' }}
-              type="button"
             >
               <span>{item.icon}</span>
               <span>{item.label}</span>
