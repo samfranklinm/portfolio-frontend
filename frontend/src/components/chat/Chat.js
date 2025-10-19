@@ -91,7 +91,7 @@ function Chat() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, currentText]);
+  }, [messages, currentText, isGenerating]);
 
   const stopTyping = () => {
     clearInterval(typingInterval.current);
