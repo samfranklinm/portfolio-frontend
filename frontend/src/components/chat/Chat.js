@@ -44,6 +44,7 @@ function Chat() {
   ]);
   const typingInterval = useRef(null);
   const messagesEndRef = useRef(null);
+  const textareaRef = useRef(null);
   const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
   const [statusMessage, setStatusMessage] = useState(null);
   const statusTimeouts = useRef([]);
