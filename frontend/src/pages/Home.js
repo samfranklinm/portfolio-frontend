@@ -72,9 +72,7 @@ function Home() {
       }} />
       
       <LogoLink />
-      <div className={`absolute top-[20%] w-full max-w-3xl text-center px-4 transition-colors duration-500 ${
-        darkMode ? 'text-[#e7e5e2]' : 'text-[#35312d]'
-      }`}>
+      <div className="absolute top-[20%] text-[#35312d] w-full max-w-3xl text-center px-4">
         <motion.h1
           variants={textVariants}
           initial="hidden"
@@ -88,7 +86,7 @@ function Home() {
           initial="hidden"
           animate={controls}
           transition={{ delay: 0.5 }}
-          className={`text-xl font-light ${darkMode ? 'text-[#e7e5e2]' : 'text-[#35312d]'}`}
+          className="text-xl text-[#35312d] font-light"
         >
           I'm Sam. Nice to e-meet you.
         </motion.h2>
@@ -97,7 +95,7 @@ function Home() {
           initial="hidden"
           animate={controls}
           transition={{ delay: 1 }}
-          className={`text-md font-light ${darkMode ? 'text-[#c7c5c2]' : 'text-[#35312d]'}`}
+          className="text-md text-[#35312d] font-light"
         >
           I'm sure you're eager to get to know me... Let's chat!
         </motion.h3>
@@ -106,9 +104,7 @@ function Home() {
         variants={chatVariants}
         initial="hidden"
         animate={controls}
-        className={`w-full lg:max-w-4xl h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4 relative transition-colors duration-500 ${
-          darkMode ? 'text-[#e7e5e2]' : 'text-[#35312d]'
-        }`}
+        className="w-full text-[#35312d] lg:max-w-4xl h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4 relative"
         style={{
           filter: 'drop-shadow(0 20px 40px rgba(67, 62, 57, 0.15))'
         }}
