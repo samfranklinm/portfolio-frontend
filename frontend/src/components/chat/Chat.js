@@ -259,7 +259,7 @@ function Chat() {
           background: msg.sender === 'user' 
             ? '#0e639c'
             : '#2d2d2d',
-          color: msg.sender === 'user' ? '#ffffff' : '#cccccc',
+          color: '#ffffff',
           border: msg.sender === 'bot' ? '1px solid #3e3e42' : 'none',
           fontFamily: "'Fira Code', monospace",
           fontSize: '13px',
