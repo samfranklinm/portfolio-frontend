@@ -61,11 +61,7 @@ function Home() {
   };
 
   return (
-    <div className={`relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 ${
-      darkMode 
-        ? 'bg-gradient-to-b from-[#1a1816] to-[#2d2a26]'
-        : 'bg-gradient-to-b from-[#dbd8d5] to-[#8C8278]'
-    }`}>
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-[#dbd8d5] to-[#8C8278]">
       {/* Subtle grid pattern overlay */}
       <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
         backgroundImage: `
@@ -74,33 +70,6 @@ function Home() {
         `,
         backgroundSize: '40px 40px'
       }} />
-      
-      {/* Dark Mode Toggle */}
-      <button
-        onClick={() => setDarkMode(!darkMode)}
-        className={`fixed top-4 right-4 sm:top-6 sm:right-6 z-50 p-2.5 sm:p-3 rounded-full transition-all duration-300 ${
-          darkMode 
-            ? 'bg-[#3d3a36] text-[#f5f3f0] hover:bg-[#4d4a46]'
-            : 'bg-white/30 text-[#433e39] hover:bg-white/50'
-        }`}
-        style={{
-          boxShadow: darkMode 
-            ? '0 4px 12px rgba(0, 0, 0, 0.3)'
-            : '0 4px 12px rgba(140, 130, 120, 0.2)',
-          backdropFilter: 'blur(10px)'
-        }}
-        aria-label="Toggle dark mode"
-      >
-        {darkMode ? (
-          <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" />
-          </svg>
-        ) : (
-          <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-          </svg>
-        )}
-      </button>
       
       <LogoLink />
       <div className={`absolute top-[20%] w-full max-w-3xl text-center px-4 transition-colors duration-500 ${
