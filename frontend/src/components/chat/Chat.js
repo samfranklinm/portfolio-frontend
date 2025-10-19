@@ -313,6 +313,7 @@ function Chat() {
             <div
               key={idx}
               onClick={(e) => {
+                console.log('Clicked:', item.label);
                 e.preventDefault();
                 e.stopPropagation();
                 setInput(item.prompt);
@@ -320,6 +321,7 @@ function Chat() {
                 return false;
               }}
               onMouseDown={(e) => {
+                console.log('MouseDown:', item.label);
                 e.preventDefault();
                 return false;
               }}
