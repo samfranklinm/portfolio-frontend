@@ -104,7 +104,7 @@ function Home() {
           initial="hidden"
           animate={controls}
           transition={{ delay: 0.5 }}
-          className="text-xl font-light"
+          className="text-lg sm:text-xl font-light"
           style={{ color: '#cccccc', fontFamily: "'Fira Code', monospace" }}
         >
           I'm Sam. Nice to e-meet you.
@@ -114,7 +114,7 @@ function Home() {
           initial="hidden"
           animate={controls}
           transition={{ delay: 1 }}
-          className="text-md font-light"
+          className="text-sm sm:text-md font-light"
           style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}
         >
           I'm sure you're eager to get to know me... Let's chat!
