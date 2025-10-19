@@ -276,12 +276,12 @@ function Chat() {
             : '#2d2d2d';
         }}
       >
-        <div className="prose prose-sm max-w-none prose-headings:text-[#433e39] prose-p:text-[#433e39] prose-strong:text-[#433e39] prose-em:text-[#433e39] prose-ul:text-[#433e39] prose-ol:text-[#433e39] prose-li:text-[#433e39] prose-hr:border-[#433e39]">
+        <div className="prose prose-sm max-w-none prose-headings:text-white prose-p:text-white prose-strong:text-white prose-em:text-white prose-ul:text-white prose-ol:text-white prose-li:text-white prose-a:text-white prose-code:text-white" style={{ color: '#ffffff' }}>
           <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
             {sanitizeHtml(msg.text)}
           </ReactMarkdown>
           {msg.sender === 'bot' && (
-            <div className="mt-2 text-xs italic text-[#433e39]/60">
+            <div className="mt-2 text-xs italic" style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
               This is an AI-generated response, therefore, accuracy is not guaranteed. Please contact me for clarification, if needed.
             </div>
           )}
