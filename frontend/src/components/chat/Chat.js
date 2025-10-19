@@ -235,11 +235,9 @@ function Chat() {
     >
       {msg.sender === 'bot' && (
         <div className="flex flex-col items-end mr-3 pt-1" style={{ minWidth: '40px' }}>
-          {msg.text.split('\n').map((_, lineIdx) => (
-            <div key={lineIdx} className="text-xs leading-6" style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}>
-              {idx * 10 + lineIdx + 1}
-            </div>
-          ))}
+          <div className="text-xs leading-6" style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}>
+            {idx + 1}
+          </div>
         </div>
       )}
       <motion.div
