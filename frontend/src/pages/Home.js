@@ -81,7 +81,14 @@ function Home() {
     <div className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-6" style={{
       backgroundColor: '#1e1e1e'
     }}>
-      <LogoLink />
+      {/* Animated Logo */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.2, x: 0, y: 0 }}
+        animate={logoControls}
+        className="fixed top-8 left-8 z-20"
+      >
+        <LogoLink />
+      </motion.div>
       <div className="absolute top-[20%] w-full max-w-3xl text-center px-4 pointer-events-none" style={{ color: '#cccccc' }}>
         <motion.h1
           variants={textVariants}
