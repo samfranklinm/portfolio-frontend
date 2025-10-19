@@ -124,7 +124,7 @@ function Home() {
         variants={chatVariants}
         initial="hidden"
         animate={controls}
-        className="w-full lg:max-w-[1400px] h-[80vh] sm:h-[85vh] flex items-center justify-center px-2 sm:px-4 relative"
+        className="w-full max-w-[95vw] sm:max-w-[90vw] lg:max-w-[1400px] h-[85vh] sm:h-[85vh] flex items-center justify-center px-1 sm:px-2 md:px-4 relative"
       >
         <Chat />
       </motion.div>
