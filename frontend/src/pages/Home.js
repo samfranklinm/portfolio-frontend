@@ -65,7 +65,7 @@ function Home() {
       backgroundColor: '#1e1e1e'
     }}>
       <LogoLink />
-      <div className="absolute top-[20%] w-full max-w-3xl text-center px-4" style={{ color: '#cccccc' }}>
+      <div className="absolute top-[20%] w-full max-w-3xl text-center px-4 pointer-events-none" style={{ color: '#cccccc' }}>
         <motion.h1
           variants={textVariants}
           initial="hidden"
