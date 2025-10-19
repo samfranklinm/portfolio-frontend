@@ -242,34 +242,27 @@ function Chat() {
         }}
         className={`markdown-content ${
           msg.sender === 'user'
-            ? 'max-w-xl'
-            : 'w-80vw max-w-[90%]'
+            ? 'max-w-xl text-[#433e39]'
+            : 'w-80vw max-w-[90%] text-[#433e39]'
         } px-4 py-2 rounded-lg backdrop-blur-sm transition-all duration-200`}
         style={{
           background: msg.sender === 'user' 
-            ? (darkMode ? 'rgba(80, 75, 70, 0.5)' : 'rgba(140, 130, 120, 0.3)')
-            : (darkMode ? 'rgba(60, 56, 52, 0.4)' : 'rgba(255, 255, 255, 0.08)'),
-          boxShadow: darkMode 
-            ? '0 2px 12px rgba(0, 0, 0, 0.2)'
-            : '0 2px 12px rgba(140, 130, 120, 0.1)',
-          color: darkMode ? '#e7e5e2' : '#433e39'
+            ? 'rgba(140, 130, 120, 0.3)'
+            : 'rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 2px 12px rgba(140, 130, 120, 0.1)',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = msg.sender === 'user'
-            ? (darkMode ? 'rgba(90, 85, 80, 0.6)' : 'rgba(140, 130, 120, 0.4)')
-            : (darkMode ? 'rgba(70, 66, 62, 0.5)' : 'rgba(255, 255, 255, 0.12)');
-          e.currentTarget.style.boxShadow = darkMode 
-            ? '0 4px 16px rgba(0, 0, 0, 0.3)'
-            : '0 4px 16px rgba(140, 130, 120, 0.15)';
+            ? 'rgba(140, 130, 120, 0.4)'
+            : 'rgba(255, 255, 255, 0.12)';
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(140, 130, 120, 0.15)';
           e.currentTarget.style.transform = 'translateY(-1px)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = msg.sender === 'user'
-            ? (darkMode ? 'rgba(80, 75, 70, 0.5)' : 'rgba(140, 130, 120, 0.3)')
-            : (darkMode ? 'rgba(60, 56, 52, 0.4)' : 'rgba(255, 255, 255, 0.08)');
-          e.currentTarget.style.boxShadow = darkMode 
-            ? '0 2px 12px rgba(0, 0, 0, 0.2)'
-            : '0 2px 12px rgba(140, 130, 120, 0.1)';
+            ? 'rgba(140, 130, 120, 0.3)'
+            : 'rgba(255, 255, 255, 0.08)';
+          e.currentTarget.style.boxShadow = '0 2px 12px rgba(140, 130, 120, 0.1)';
           e.currentTarget.style.transform = 'translateY(0)';
         }}
       >
