@@ -282,10 +282,58 @@ function Chat() {
   );
 
   return (
-    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex flex-col overflow-hidden text-[#433e39] rounded-xl" style={{
-      boxShadow: '0 8px 32px rgba(140, 130, 120, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+    <div className="w-full lg:w-[100vh] h-[80vh] sm:h-[85vh] flex rounded-xl overflow-hidden" style={{
+      backgroundColor: '#1e1e1e',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+      fontFamily: "'Fira Code', monospace"
     }}>
-      <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4 text-[#433e39] max-w-[100vw] lg:max-w-none fade-edges">
+      {/* Sidebar - File Explorer */}
+      <div className={`${sidebarCollapsed ? 'w-0' : 'w-48'} transition-all duration-300 overflow-hidden`} style={{
+        backgroundColor: '#252526',
+        borderRight: '1px solid #3e3e42'
+      }}>
+        <div className="p-2">
+          <div className="text-xs text-gray-400 uppercase mb-2 px-2">Explorer</div>
+          {[
+            { icon: '📁', label: 'Experience', prompt: 'Tell me about your professional experience' },
+            { icon: '📁', label: 'Skills', prompt: 'What are your technical skills?' },
+            { icon: '📁', label: 'Projects', prompt: 'What projects have you worked on?' },
+            { icon: '📁', label: 'Education', prompt: 'Tell me about your education background' },
+            { icon: '📁', label: 'Contact', prompt: 'How can I contact you?' }
+          ].map((item, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setInput(item.prompt);
+                setShowSuggestions(false);
+              }}
+              className="w-full text-left px-2 py-1.5 text-sm hover:bg-[#2a2d2e] transition-colors rounded flex items-center gap-2"
+              style={{ color: '#cccccc' }}
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Editor Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Tab Bar */}
+        <div style={{ backgroundColor: '#2d2d2d', borderBottom: '1px solid #3e3e42' }} className="flex items-center px-2">
+          <div className="flex items-center gap-1 py-1.5 px-3 text-sm" style={{
+            backgroundColor: '#1e1e1e',
+            borderRight: '1px solid #3e3e42',
+            color: '#cccccc'
+          }}>
+            <span className="mr-2">💬</span>
+            <span>about_my_professional_life.chat</span>
+            <button className="ml-2 hover:bg-[#3e3e42] rounded px-1">×</button>
+          </div>
+        </div>
+
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto scroll-smooth px-4 pb-4" style={{ backgroundColor: '#1e1e1e' }}>
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
           <motion.div 
