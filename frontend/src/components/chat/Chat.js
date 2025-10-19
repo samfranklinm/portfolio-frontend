@@ -260,8 +260,8 @@ function Chat() {
         className={`markdown-content ${
           msg.sender === 'user'
             ? 'max-w-xl'
-            : 'w-80vw max-w-[90%]'
-        } px-4 py-2 rounded transition-all duration-200`}
+            : 'w-full sm:w-80vw max-w-[90%]'
+        } px-3 sm:px-4 py-2 rounded transition-all duration-200`}
         style={{
           background: msg.sender === 'user' 
             ? '#0e639c'
@@ -269,7 +269,7 @@ function Chat() {
           color: '#ffffff',
           border: msg.sender === 'bot' ? '1px solid #3e3e42' : 'none',
           fontFamily: "'Fira Code', monospace",
-          fontSize: '13px',
+          fontSize: '12px',
           lineHeight: '1.6'
         }}
         onMouseEnter={(e) => {
