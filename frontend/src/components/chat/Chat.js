@@ -389,15 +389,16 @@ function Chat() {
                   </motion.div>
                   {/* Progress Bar */}
                   <div className="mt-2 w-full">
-                    <div className="h-1 bg-[#433e39]/10 rounded-full overflow-hidden">
+                    <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: '#3e3e42' }}>
                       <motion.div 
-                        className="h-full bg-gradient-to-r from-[#8C8278] to-[#a29a92] rounded-full"
+                        className="h-full rounded-full"
+                        style={{ backgroundColor: '#007acc' }}
                         initial={{ width: 0 }}
                         animate={{ width: `${thinkingProgress}%` }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
                       />
                     </div>
-                    <div className="text-[10px] text-[#433e39]/50 mt-1 text-right">
+                    <div className="text-[10px] mt-1 text-right" style={{ color: '#858585' }}>
                       {Math.round(thinkingProgress)}%
                     </div>
                   </div>
