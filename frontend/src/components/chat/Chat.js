@@ -243,7 +243,7 @@ function Chat() {
       } py-2`}
     >
       {msg.sender === 'bot' && (
-        <div className="flex flex-col items-end mr-3 pt-1" style={{ minWidth: '40px' }}>
+        <div className="hidden sm:flex flex-col items-end mr-3 pt-1" style={{ minWidth: '40px' }}>
           <div className="text-xs leading-6" style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}>
             {idx + 1}
           </div>
