@@ -304,20 +304,22 @@ function Chat() {
         <div className="p-2">
           <div className="text-xs text-gray-400 uppercase mb-2 px-2">Explorer</div>
           {[
-            { icon: '📁', label: 'Experience', prompt: 'Tell me about your professional experience' },
-            { icon: '📁', label: 'Skills', prompt: 'What are your technical skills?' },
-            { icon: '📁', label: 'Projects', prompt: 'What projects have you worked on?' },
-            { icon: '📁', label: 'Education', prompt: 'Tell me about your education background' },
-            { icon: '📁', label: 'Contact', prompt: 'How can I contact you?' }
+            { icon: '📁', label: 'Professional Journey', prompt: 'Walk me through your career journey, highlighting key achievements at each role.' },
+            { icon: '📁', label: 'Technical Skills', prompt: 'What are your core technical skills and how have you applied them in real projects?' },
+            { icon: '📁', label: 'Impactful Project', prompt: 'Describe your most impactful project and the specific challenges you overcame.' },
+            { icon: '📁', label: 'Career Goals', prompt: 'Where do you see your career heading and what excites you most about that path?' },
+            { icon: '📁', label: 'Contact Info', prompt: "What's the best way to reach you for professional opportunities?" }
           ].map((item, idx) => (
             <button
               key={idx}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 setInput(item.prompt);
                 setShowSuggestions(false);
               }}
               className="w-full text-left px-2 py-1.5 text-sm hover:bg-[#2a2d2e] transition-colors rounded flex items-center gap-2"
               style={{ color: '#cccccc' }}
+              type="button"
             >
               <span>{item.icon}</span>
               <span>{item.label}</span>
