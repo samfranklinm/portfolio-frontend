@@ -446,7 +446,10 @@ function Chat() {
           <span className="text-xs" style={{ color: '#858585' }}>{'>'}</span>
           <input
             className="flex-1 bg-transparent border-none focus:outline-none text-sm"
-            style={{ color: '#cccccc', fontFamily: "'Fira Code', monospace" }}
+            style={{ 
+              color: '#ffffff', 
+              fontFamily: "'Fira Code', monospace"
+            }}
             type="text"
             placeholder="Ask about Sam's professional life..."
             value={input}
