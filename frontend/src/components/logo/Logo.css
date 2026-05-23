@@ -1,45 +1,34 @@
-.svgHover {
-    width: 100%;
-    height: 100%;
-    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-    filter: drop-shadow(0 2px 4px rgba(67, 62, 57, 0.2));
+.svg-logo {
+  width: 100%;
+  height: 100%;
+  transition: filter 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  filter: drop-shadow(0 2px 4px rgba(67, 62, 57, 0.15));
 }
 
-.svgHover path {
-    fill: #433e39;
-    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+.svg-logo path {
+  fill: var(--color-accent);
+  transition: fill 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-.container:hover .svgHover {
-    transform: translateY(-2px) scale(1.02);
-    filter: drop-shadow(0 4px 12px rgba(140, 130, 120, 0.3));
+.logo-link:hover .svg-logo {
+  filter: drop-shadow(0 4px 14px var(--color-accent-dim));
 }
 
-.container:hover .svgHover path {
-    fill: #978e85;
+.logo-link:hover .svg-logo path {
+  fill: #a89890;
 }
 
-.svg {
-    width: 120px;
-    height: 120px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-}
-
-.svg:hover {
-    z-index: 10;
-    color: inherit;
-    cursor: pointer;
+.logo-wrap {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 640px) {
-    .svg {
-        width: 70px;
-        height: 90px;
-        position: relative;
-        z-index: 10;
-    }
+  .logo-wrap {
+    width: 40px;
+    height: 40px;
+  }
 }

@@ -1,0 +1,30 @@
+.chat-thinking {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  width: fit-content;
+  max-width: 280px;
+}
+
+.chat-thinking-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.chat-thinking-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+}
+
+.chat-thinking-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-style: italic;
+  white-space: nowrap;
+}

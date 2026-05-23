@@ -1,29 +1,14 @@
-import React from "react";
-import { Link } from '@mui/material'; 
-import Zoom from '@mui/material/Zoom';
+import React from 'react';
 import './Logo.css';
-import Resume from "../../settings/resume.json";
-import { Logo } from "./Logo";
+import { Logo } from './Logo';
+import Resume from '../../settings/resume.json';
 
-export const LogoLink = () => {
-    return (
-        <Zoom in={true} timeout={1300}>
-            <Link
-                variant="h6"
-                href={Resume.basics.url}
-                underline="none"
-                color="inherit"
-                noWrap
-                className="svg container"
-                sx={{ 
-                    display: 'block', // Ensures block-level rendering
-                    '&:hover': {
-                        backgroundColor: 'transparent' // Prevents MUI hover background
-                    }
-                }}
-            >
-                <Logo />
-            </Link>
-        </Zoom>
-    );
-};
+export const LogoLink = () => (
+  <a
+    href={Resume.basics.url}
+    className="logo-link"
+    aria-label="Sam Franklin — home"
+  >
+    <Logo />
+  </a>
+);

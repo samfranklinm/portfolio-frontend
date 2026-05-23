@@ -1,516 +1,110 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import sanitizeHtml from 'sanitize-html';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChatMessages } from './ChatMessages';
+import { ChatInput } from './ChatInput';
+import { ChatPrompts } from './ChatPrompts';
+import { sendChatMessage } from '../../utils/api';
 import './Chat.css';
-import { ArrowDownward } from '@mui/icons-material';
-import { motion } from 'framer-motion';
+
+const CHARS_PER_TICK = 8;
+const TICK_MS = 25;
+const STATUS_CYCLE_MS = 3000;
 
 function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentText, setCurrentText] = useState('');
-  const [sessionId, setSessionId] = useState(null);
-  const [showSuggestions, setShowSuggestions] = useState(true);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [suggestedPrompts, setSuggestedPrompts] = useState([
-    {
-      title: "Professional Journey",
-      prompt: "Walk me through your career journey, highlighting key achievements at each role.",
-      used: false
-    },
-    {
-      title: "Technical Skills",
-      prompt: "What are your core technical skills and how have you applied them in real projects?",
-      used: false
-    },
-    {
-      title: "Impactful Project",
-      prompt: "Describe your most impactful project and the specific challenges you overcame.",
-      used: false
-    },
-    {
-      title: "Career Goals",
-      prompt: "Where do you see your career heading and what excites you most about that path?",
-      used: false
-    },
-    {
-      title: "Contact Information",
-      prompt: "What's the best way to reach you for professional opportunities?",
-      used: false
-    }
-  ]);
-  const typingInterval = useRef(null);
-  const messagesEndRef = useRef(null);
-  const textareaRef = useRef(null);
-  const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
-  const [statusMessage, setStatusMessage] = useState(null);
-  const statusTimeouts = useRef([]);
-  const [thinkingProgress, setThinkingProgress] = useState(0);
+  const [showPrompts, setShowPrompts] = useState(true);
+  const [statusIndex, setStatusIndex] = useState(0);
 
-  const handleSuggestionClick = (selectedPrompt) => {
-    setInput(selectedPrompt.prompt);
-    setShowSuggestions(false);
-    setSuggestedPrompts(prevPrompts =>
-      prevPrompts.map(p => 
-        p.prompt === selectedPrompt.prompt 
-          ? { ...p, used: true }
-          : p
-      )
-    );
-  };
+  const typingRef = useRef(null);
+  const statusRef = useRef(null);
 
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      const scrollContainer = messagesEndRef.current.parentElement;
-      const scrollHeight = scrollContainer.scrollHeight;
-      
-      const start = scrollContainer.scrollTop;
-      const end = scrollHeight - scrollContainer.clientHeight;
-      const duration = 600;
-      const startTime = performance.now();
-      
-      const scroll = (currentTime) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Smooth ease-out cubic
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        
-        scrollContainer.scrollTop = start + (end - start) * easeOut;
-        
-        if (progress < 1) {
-          requestAnimationFrame(scroll);
-        }
-      };
-      
-      requestAnimationFrame(scroll);
-    }
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, currentText, isGenerating]);
-
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
-    }
-  }, [input]);
+  useEffect(() => () => {
+    clearInterval(typingRef.current);
+    clearInterval(statusRef.current);
+  }, []);
 
   const stopTyping = () => {
-    clearInterval(typingInterval.current);
+    clearInterval(typingRef.current);
+    clearInterval(statusRef.current);
     setIsGenerating(false);
-    setMessages((prev) => [
-      ...prev,
-      { sender: 'bot', text: currentText },
-    ]);
+    if (currentText) {
+      setMessages((prev) => [...prev, { sender: 'bot', text: currentText }]);
+    }
     setCurrentText('');
-    statusTimeouts.current.forEach(clearTimeout);
-    statusTimeouts.current = [];
-    setStatusMessage(null);
+    setStatusIndex(0);
+    setShowPrompts(true);
   };
 
-  const statusMessages = [
-    "Analyzing resume context...",
-    "Processing your question...",
-    "Generating response...",
-  ];
+  const sendMessage = async (text) => {
+    const question = (text || input).trim();
+    if (!question) return;
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-
-    setMessages((prev) => [...prev, { sender: 'user', text: input }]);
+    setMessages((prev) => [...prev, { sender: 'user', text: question }]);
     setInput('');
     setIsGenerating(true);
-    setShowSuggestions(false);
-    setSuggestedPrompts((prev) => prev.filter((prompt) => prompt !== input));
-    setThinkingProgress(0);
+    setShowPrompts(false);
+    setStatusIndex(0);
 
-    setStatusMessage(statusMessages[0]);
-    
-    // Simulate thinking progress
-    let progress = 0;
-    const progressInterval = setInterval(() => {
-      progress += Math.random() * 15;
-      if (progress > 90) progress = 90;
-      setThinkingProgress(progress);
-    }, 300);
-    
-    let messageIndex = 1;
-    const messageInterval = setInterval(() => {
-      setStatusMessage(statusMessages[messageIndex]);
-      messageIndex = (messageIndex + 1) % statusMessages.length;
-    }, 3000);
+    statusRef.current = setInterval(() => {
+      setStatusIndex((i) => i + 1);
+    }, STATUS_CYCLE_MS);
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URI}/api/chat`, 
-        { question: input },
-        { 
-          headers: { 
-            'session-id': sessionId 
-          }
-        }
-      );
-      
-      clearInterval(messageInterval);
-      clearInterval(progressInterval);
-      setThinkingProgress(100);
-      setStatusMessage(null);
-      
-      if (response.data.sessionId) {
-        setSessionId(response.data.sessionId);
-      }
-      const botMessage = response.data.answer;
+      const answer = await sendChatMessage(question);
+
+      clearInterval(statusRef.current);
+      setStatusIndex(0);
+
       let index = 0;
-      const charsPerIteration = 5;
-
-      statusTimeouts.current.forEach(clearTimeout);
-      statusTimeouts.current = [];
-      setStatusMessage(null);
-
-      typingInterval.current = setInterval(() => {
-        setCurrentText(botMessage.slice(0, index));
-        index += charsPerIteration;
-        if (index > botMessage.length) {
-          clearInterval(typingInterval.current);
-          setIsGenerating(false);
-          setMessages((prev) => [
-            ...prev,
-            { sender: 'bot', text: botMessage },
-          ]);
+      typingRef.current = setInterval(() => {
+        index += CHARS_PER_TICK;
+        setCurrentText(answer.slice(0, index));
+        if (index >= answer.length) {
+          clearInterval(typingRef.current);
+          setMessages((prev) => [...prev, { sender: 'bot', text: answer }]);
           setCurrentText('');
-          setShowSuggestions(true);
-          setIsSuggestionsExpanded(false);
+          setIsGenerating(false);
+          setShowPrompts(true);
         }
-      }, 20); // Smoother, more natural typing speed
-    } catch (error) {
-      clearInterval(messageInterval);
-      clearInterval(progressInterval);
-      setThinkingProgress(0);
-      setStatusMessage(null);
-      const errorMessage = error.response?.data?.error || 'An unexpected error occurred. Please try again later.';
+      }, TICK_MS);
+    } catch (err) {
+      clearInterval(statusRef.current);
       setMessages((prev) => [
         ...prev,
-        { sender: 'bot', text: errorMessage },
+        { sender: 'bot', text: err.message || 'An unexpected error occurred.' },
       ]);
       setIsGenerating(false);
-      setShowSuggestions(true);
-      setIsSuggestionsExpanded(false);
-      statusTimeouts.current.forEach(clearTimeout);
-      statusTimeouts.current = [];
-      setStatusMessage(null);
+      setCurrentText('');
+      setShowPrompts(true);
     }
   };
 
-  const toggleSuggestions = () => {
-    setIsSuggestionsExpanded((prev) => !prev);
+  const handlePromptSelect = (text) => {
+    sendMessage(text);
   };
-
-  const renderers = {
-    a: ({ node, href, children }) => (
-      <a 
-        href={href} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        style={{ 
-          color: '#433e39', 
-          fontWeight: 'bold', 
-          textDecoration: 'underline' 
-        }}
-      >
-        {children}
-      </a>
-    ),
-  };
-
-  const renderMessage = (msg, idx) => (
-    <motion.div
-      key={idx}
-      initial={{ opacity: 0, y: 15, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ 
-        duration: 0.4, 
-        ease: [0.25, 0.1, 0.25, 1],
-        delay: idx * 0.05
-      }}
-      className={`flex ${
-        msg.sender === 'user' ? 'justify-end' : 'justify-start'
-      } py-2`}
-    >
-      {msg.sender === 'bot' && (
-        <div className="hidden sm:flex flex-col items-end mr-3 pt-1" style={{ minWidth: '40px' }}>
-          <div className="text-xs leading-6" style={{ color: '#858585', fontFamily: "'Fira Code', monospace" }}>
-            {idx + 1}
-          </div>
-        </div>
-      )}
-      <motion.div
-        layout
-        initial={{ scale: 0.96, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ 
-          duration: 0.3, 
-          ease: [0.25, 0.1, 0.25, 1]
-        }}
-        className={`markdown-content ${
-          msg.sender === 'user'
-            ? 'max-w-xl'
-            : 'w-full sm:w-80vw max-w-[90%]'
-        } px-3 sm:px-4 py-2 rounded transition-all duration-200`}
-        style={{
-          background: msg.sender === 'user' 
-            ? '#0e639c'
-            : '#2d2d2d',
-          color: '#ffffff',
-          border: msg.sender === 'bot' ? '1px solid #3e3e42' : 'none',
-          fontFamily: "'Fira Code', monospace",
-          fontSize: '12px',
-          lineHeight: '1.6'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = msg.sender === 'user'
-            ? '#1177bb'
-            : '#333333';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = msg.sender === 'user'
-            ? '#0e639c'
-            : '#2d2d2d';
-        }}
-      >
-        <div className="prose prose-sm max-w-none" style={{ color: '#ffffff !important' }}>
-          <style>{`
-            .markdown-content * {
-              color: #ffffff !important;
-            }
-            .markdown-content a {
-              color: #60a5fa !important;
-              text-decoration: underline;
-            }
-          `}</style>
-          <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
-            {sanitizeHtml(msg.text)}
-          </ReactMarkdown>
-          {msg.sender === 'bot' && (
-            <div className="mt-2 text-xs italic" style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
-              This is an AI-generated response, therefore, accuracy is not guaranteed. Please contact me for clarification, if needed.
-            </div>
-          )}
-        </div>
-      </motion.div>
-    </motion.div>
-  );
 
   return (
-    <div className="w-full max-w-[100vw] lg:w-[120vw] lg:max-w-[1400px] h-[85vh] sm:h-[85vh] flex rounded-xl overflow-hidden" style={{
-      backgroundColor: '#1e1e1e',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-      fontFamily: "'Fira Code', monospace",
-      position: 'relative',
-      zIndex: 50
-    }}>
-      {/* Sidebar - File Explorer - Hidden on mobile */}
-      <div className={`${sidebarCollapsed ? 'w-0' : 'w-48'} transition-all duration-300 overflow-hidden hidden md:block`} style={{
-        backgroundColor: '#252526',
-        borderRight: '1px solid #3e3e42'
-      }}>
-        <div className="p-2">
-          <div className="text-xs text-gray-400 uppercase mb-2 px-2">Explorer</div>
-          {[
-            { icon: '📁', label: 'Professional Journey', prompt: 'Walk me through your career journey, highlighting key achievements at each role.' },
-            { icon: '📁', label: 'Technical Skills', prompt: 'What are your core technical skills and how have you applied them in real projects?' },
-            { icon: '📁', label: 'Impactful Project', prompt: 'Describe your most impactful project and the specific challenges you overcame.' },
-            { icon: '📁', label: 'Career Goals', prompt: 'Where do you see your career heading and what excites you most about that path?' },
-            { icon: '📁', label: 'Contact Info', prompt: "What's the best way to reach you for professional opportunities?" }
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              onClick={(e) => {
-                console.log('Clicked:', item.label);
-                e.preventDefault();
-                e.stopPropagation();
-                setInput(item.prompt);
-                setShowSuggestions(false);
-                return false;
-              }}
-              onMouseDown={(e) => {
-                console.log('MouseDown:', item.label);
-                e.preventDefault();
-                return false;
-              }}
-              className="w-full text-left px-2 py-1.5 text-sm hover:bg-[#2a2d2e] transition-colors rounded flex items-center gap-2 cursor-pointer"
-              style={{ color: '#cccccc' }}
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Main Editor Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Tab Bar - Simplified on mobile */}
-        <div style={{ backgroundColor: '#2d2d2d', borderBottom: '1px solid #3e3e42' }} className="flex items-center px-2">
-          <div className="flex items-center gap-1 py-1.5 px-2 sm:px-3 text-xs sm:text-sm" style={{
-            backgroundColor: '#1e1e1e',
-            borderRight: '1px solid #3e3e42',
-            color: '#cccccc'
-          }}>
-            <span className="mr-1 sm:mr-2">💬</span>
-            <span className="hidden sm:inline">about_my_professional_life.chat</span>
-            <span className="sm:hidden">chat</span>
-            <button className="ml-1 sm:ml-2 hover:bg-[#3e3e42] rounded px-1 text-xs">×</button>
-          </div>
-        </div>
-
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto scroll-smooth px-2 sm:px-4 pb-4" style={{ backgroundColor: '#1e1e1e' }}>
-        {messages.map((msg, idx) => renderMessage(msg, idx))}
-        {isGenerating && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-            className="flex justify-start py-2"
-          >
-            <div className="w-fit max-w-[80%] px-4 py-2 rounded" style={{
-              background: '#2d2d2d',
-              border: '1px solid #3e3e42'
-            }}>
-              {currentText ? (
-                <div className="prose prose-sm max-w-none" style={{ color: '#ffffff' }}>
-                  <style>{`
-                    .markdown-content * {
-                      color: #ffffff !important;
-                    }
-                    .markdown-content a {
-                      color: #60a5fa !important;
-                      text-decoration: underline;
-                    }
-                  `}</style>
-                  <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>{sanitizeHtml(currentText)}</ReactMarkdown>
-                </div>
-              ) : (
-                <div>
-                  <motion.div 
-                    className="flex items-center gap-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <div className="flex gap-1">
-                      <motion.div 
-                        className="h-1.5 w-1.5 rounded-full"
-                        style={{ backgroundColor: '#007acc' }}
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
-                      />
-                      <motion.div 
-                        className="h-1.5 w-1.5 rounded-full"
-                        style={{ backgroundColor: '#007acc' }}
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                      />
-                      <motion.div 
-                        className="h-1.5 w-1.5 rounded-full"
-                        style={{ backgroundColor: '#007acc' }}
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-                      />
-                    </div>
-                    <span className="italic text-[11px]" style={{ color: '#858585' }}>{statusMessage}</span>
-                  </motion.div>
-                  {/* Progress Bar */}
-                  <div className="mt-2 w-full">
-                    <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: '#3e3e42' }}>
-                      <motion.div 
-                        className="h-full rounded-full"
-                        style={{ backgroundColor: '#007acc' }}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${thinkingProgress}%` }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                      />
-                    </div>
-                    <div className="text-[10px] mt-1 text-right" style={{ color: '#858585' }}>
-                      {Math.round(thinkingProgress)}%
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Input Area */}
-      <div style={{ backgroundColor: '#2d2d2d', borderTop: '1px solid #3e3e42' }} className="p-3">
-        <div className="flex items-start gap-2">
-          <span className="text-xs mt-2" style={{ color: '#858585' }}>{'>'}</span>
-          <textarea
-            ref={textareaRef}
-            className="flex-1 bg-transparent border-none focus:outline-none text-sm resize-none"
-            style={{ 
-              color: '#ffffff', 
-              fontFamily: "'Fira Code', monospace",
-              maxHeight: '120px',
-              minHeight: '28px',
-              overflow: 'auto'
-            }}
-            rows={1}
-            placeholder="Ask about Sam's professional life..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey && !isGenerating) {
-                e.preventDefault();
-                sendMessage();
-              }
-            }}
-            disabled={isGenerating}
-          />
-          <button
-            onClick={isGenerating ? stopTyping : sendMessage}
-            disabled={!input.trim() && !isGenerating}
-            className="px-4 py-1.5 rounded text-xs font-medium transition-all"
-            style={{
-              backgroundColor: isGenerating ? '#c72e2e' : (input.trim() ? '#0e639c' : '#2d2d2d'),
-              color: isGenerating ? '#ffffff' : (input.trim() ? '#ffffff' : '#858585'),
-              border: '1px solid #3e3e42',
-              minHeight: '28px'
-            }}
-          >
-            {isGenerating ? 'Stop' : 'Send'}
-          </button>
-        </div>
-      </div>
-
-      {/* Status Bar - Simplified on mobile */}
-      <div style={{ backgroundColor: '#007acc', color: '#ffffff' }} className="flex items-center justify-between px-2 sm:px-3 py-1 text-[10px] sm:text-xs">
-        <div className="flex items-center gap-2 sm:gap-4">
-          <span className="hidden sm:inline">Ln {messages.length + 1}, Col {input.length}</span>
-          <span className="sm:hidden">Ln {messages.length + 1}</span>
-          <span className="hidden md:inline">UTF-8</span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-green-400"></span>
-            <span className="hidden sm:inline">AI Agent Active</span>
-            <span className="sm:hidden">Active</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span>{messages.length} msg</span>
-          <span className="hidden md:inline">about_my_professional_life.chat</span>
-        </div>
-      </div>
+    <div className="chat-root">
+      <ChatPrompts visible={showPrompts && messages.length === 0} onSelect={handlePromptSelect} />
+      <ChatMessages
+        messages={messages}
+        currentText={currentText}
+        isGenerating={isGenerating}
+        statusIndex={statusIndex}
+      />
+      {showPrompts && messages.length > 0 && (
+        <ChatPrompts visible onSelect={handlePromptSelect} />
+      )}
+      <ChatInput
+        value={input}
+        onChange={setInput}
+        onSend={() => sendMessage()}
+        onStop={stopTyping}
+        isGenerating={isGenerating}
+      />
     </div>
-  </div>
   );
 }
 
