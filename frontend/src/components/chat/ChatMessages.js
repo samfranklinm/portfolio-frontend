@@ -24,7 +24,7 @@ const BotMessage = ({ text }) => (
   <div className="chat-msg chat-msg--bot">
     <div className="chat-msg-accent" aria-hidden="true" />
     <div className="chat-msg-body">
-      <div className="chat-md prose prose-sm max-w-none">
+      <div className="chat-md">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeSanitize]}
